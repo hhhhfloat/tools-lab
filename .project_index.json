@@ -1,0 +1,600 @@
+{
+  "dup/Same.java" : [ {
+    "id" : "dup_same_shared",
+    "line" : 1,
+    "desc" : "同名锚点（与 dup2/Same.java 重名，用于歧义测试）",
+    "symbol" : "ping"
+  }, {
+    "id" : "dup_same_local",
+    "line" : 6,
+    "desc" : "本地方法锚点",
+    "symbol" : "ping"
+  } ],
+  "dup2/Same.java" : [ {
+    "id" : "dup_same_shared",
+    "line" : 1,
+    "desc" : "同名锚点（与 dup/Same.java 重名，用于歧义测试）",
+    "symbol" : "ping"
+  }, {
+    "id" : "dup2_same_local",
+    "line" : 6,
+    "desc" : "本地方法锚点",
+    "symbol" : "ping"
+  } ],
+  "harness/anchor_oracle.py" : [ {
+    "id" : "anchor_oracle_intro",
+    "line" : 1,
+    "desc" : "独立差分校验器：按 workflow-read-only 的扫描规格重写参照实现，与真实工具产出的索引逐条比对",
+    "symbol" : "is_excluded_rel"
+  }, {
+    "id" : "oracle_spec",
+    "line" : 9,
+    "desc" : "与 AnchorScanner 保持一致的规格：扩展名白名单 + 4 种注释风格的单行锚点正则",
+    "symbol" : "is_excluded_rel"
+  }, {
+    "id" : "oracle_exclusions",
+    "line" : 27,
+    "desc" : "与 SearchFileFilter.DEFAULT_EXCLUDED_DIRS 逐字对齐的排除目录段名（任一段命中即排除）",
+    "symbol" : "is_excluded_rel"
+  }, {
+    "id" : "oracle_extract_desc",
+    "line" : 43,
+    "desc" : "参照实现：从锚点下一行紧邻注释提取描述（与工具逻辑同构）",
+    "symbol" : "extract_desc"
+  }, {
+    "id" : "oracle_scan",
+    "line" : 86,
+    "desc" : "参照实现：扫描单个文件，产出 id/line/desc（文件内重名自动加 _2 后缀）",
+    "symbol" : "scan"
+  }, {
+    "id" : "oracle_report_sink",
+    "line" : 120,
+    "desc" : "报告留证：把控制台输出同时写入 lab-out/oracle-report.txt（Tee 模式）",
+    "symbol" : "__init__"
+  }, {
+    "id" : "oracle_load_index",
+    "line" : 148,
+    "desc" : "读取工具产出的 .anchors.json / .project_index.json",
+    "symbol" : "load_index"
+  }, {
+    "id" : "oracle_known_diffs",
+    "line" : 159,
+    "desc" : "D1 回归哨兵：_end 锚点本应同时出现在两份索引中；若只在 .anchors.json 出现即判回归",
+    "symbol" : "is_known_project_index_gap"
+  }, {
+    "id" : "oracle_d2_sentinel",
+    "line" : 165,
+    "desc" : "D2 回归哨兵：JS/TS 结构解析修复后，下列文件的锚点必须至少有一个归属到方法/函数符号",
+    "symbol" : "check_d2"
+  }, {
+    "id" : "oracle_main",
+    "line" : 201,
+    "desc" : "入口：按规格（白名单 + 排除目录 + 点文件 + 点路径）重算，再与两份真实索引逐条差分",
+    "symbol" : "main"
+  }, {
+    "id" : "oracle_resolve_project",
+    "line" : 309,
+    "desc" : "定位 lab 根目录：默认取脚本上级目录，允许命令行参数覆盖",
+    "symbol" : "resolve_project"
+  } ],
+  "harness/hello_probe.py" : [ {
+    "id" : "hello_probe_py_intro",
+    "line" : 1,
+    "desc" : "探针：验证 python 运行模式可用"
+  } ],
+  "harness/js_strip_probe.py" : [ {
+    "id" : "js_strip_probe_intro",
+    "line" : 1,
+    "desc" : "D2 根因/修复双向探针：复刻 JavaScriptParser.stripStringsOnly 的「旧步长 2 / 新步长 1」两种取字语义，",
+    "symbol" : "strip_old"
+  }, {
+    "id" : "js_strip_probe_old",
+    "line" : 15,
+    "desc" : "旧实现根因复刻：普通字符分支「for 自增 + 体内自增」等价于步长 2，逐行丢一半字符",
+    "symbol" : "strip_old"
+  }, {
+    "id" : "js_strip_probe_new",
+    "line" : 35,
+    "desc" : "修复后实现复刻：转义成对跳过、字符串整体跳过，其余字符步长 1",
+    "symbol" : "strip_new"
+  }, {
+    "id" : "js_strip_probe_evidence",
+    "line" : 66,
+    "desc" : "端到端证据：统计 .project_index.json 中每个 JS/TS 文件的 symbol 覆盖数",
+    "symbol" : "collect_evidence"
+  }, {
+    "id" : "js_strip_probe_main",
+    "line" : 83,
+    "desc" : "对照语料行：旧/新算法是否改动原行、锚点/类正则是否仍能命中，并汇总工具侧 symbol 证据",
+    "symbol" : "main"
+  } ],
+  "probe/adjacent_probe.js" : [ {
+    "id" : "adj_probe_intro",
+    "line" : 1,
+    "desc" : "相邻端点探针：两个锚点严格相邻（无中间行），验证「两锚点之间没有内容可删除」告警"
+  }, {
+    "id" : "adj_start",
+    "line" : 4,
+    "desc" : ""
+  }, {
+    "id" : "adj_end",
+    "line" : 5,
+    "desc" : "相邻的终点锚点"
+  } ],
+  "probe/deep/nested/i.js" : [ {
+    "id" : "probe_deep_nested_js",
+    "line" : 1,
+    "desc" : "预期: 普通多级子目录应被递归收录"
+  } ],
+  "probe/edit_roundtrip.js" : [ {
+    "id" : "rt_intro",
+    "line" : 1,
+    "desc" : "区间编辑回归探针：start/end 成对，用于 insert→read→delete 往返验证"
+  }, {
+    "id" : "rt_start",
+    "line" : 7,
+    "desc" : "区间起点（本描述行会被区间删除吃掉）"
+  }, {
+    "id" : "rt_end",
+    "line" : 10,
+    "desc" : "区间终点"
+  } ],
+  "probe/security/anchor_regex_probe.py" : [ {
+    "id" : "anchor_regex_probe_intro",
+    "line" : 1,
+    "desc" : "D7 探针：源码含「标记+反斜杠」的锚点正则字面量，观察安全扫描是否误报路径穿越",
+    "symbol" : "count_anchors"
+  }, {
+    "id" : "demo_token",
+    "line" : 13,
+    "desc" : ""
+  } ],
+  "probe/security/traversal_recheck.py" : [ {
+    "id" : "traversal_recheck_intro",
+    "line" : 1,
+    "desc" : "D7 复测语料：源码中出现「锚点标记 + 反斜杠」（如 r\"@anchor:\\s*(\\w+)\"）是否仍被安全扫描",
+    "symbol" : "count_anchors"
+  }, {
+    "id" : "traversal_recheck_count",
+    "line" : 12,
+    "desc" : "反向自检：用上面的正则统计本文件自身的锚点数量（含本锚点共 2 个）",
+    "symbol" : "count_anchors"
+  } ],
+  "probe/src/s.java" : [ {
+    "id" : "probe_src_java",
+    "line" : 1,
+    "desc" : "预期: 名为 src 的目录不属于排除项，应被收录"
+  } ],
+  "probe/v3_edit_probe.js" : [ {
+    "id" : "v3_edit_probe_intro",
+    "line" : 1,
+    "desc" : "v3 编辑往返探针：验证 insert / read / delete 与「编辑后索引自动刷新」"
+  }, {
+    "id" : "v3_edit_start",
+    "line" : 9,
+    "desc" : "区间起点（保留）"
+  }, {
+    "id" : "v3_edit_end",
+    "line" : 13,
+    "desc" : "区间终点（保留）"
+  } ],
+  "PROJECT.md" : [ {
+    "id" : "tools_lab_project_intro",
+    "line" : 1,
+    "desc" : "tools-lab：对 Agent 工作流工具做“黑盒行为验证”的实验项目"
+  }, {
+    "id" : "lab_positioning",
+    "line" : 4,
+    "desc" : "# 项目定位"
+  }, {
+    "id" : "lab_structure",
+    "line" : 8,
+    "desc" : "# 整体结构"
+  }, {
+    "id" : "lab_method",
+    "line" : 20,
+    "desc" : "# 关键决策"
+  }, {
+    "id" : "lab_conventions",
+    "line" : 29,
+    "desc" : "# 规范约定"
+  }, {
+    "id" : "lab_findings",
+    "line" : 37,
+    "desc" : "# 工具行为差异台账（D 系列 + 观察项；状态以 v3 回归为准）"
+  }, {
+    "id" : "lab_run",
+    "line" : 58,
+    "desc" : "# 运行方式"
+  } ],
+  "samples/App.java" : [ {
+    "id" : "app_java_intro",
+    "line" : 1,
+    "desc" : "Java 语料：验证 // 锚点、块注释锚点、无描述锚点、字符串内假锚点、符号归属",
+    "symbol" : "<init>"
+  }, {
+    "id" : "app_java_field_area",
+    "line" : 14,
+    "desc" : "字段与构造区（锚点在方法定义之上，符号应落到下一个方法）",
+    "symbol" : "<init>"
+  }, {
+    "id" : "app_java_method_sum",
+    "line" : 20,
+    "desc" : "求和方法（锚点位于方法定义上方）",
+    "symbol" : "sum"
+  }, {
+    "id" : "app_java_inline_desc",
+    "line" : 26,
+    "desc" : "单行块注释作为描述",
+    "symbol" : "logWithInlineDesc"
+  }, {
+    "id" : "app_java_no_desc",
+    "line" : 32,
+    "desc" : "",
+    "symbol" : "noDesc"
+  }, {
+    "id" : "app_java_fake_in_string",
+    "line" : 35,
+    "desc" : "",
+    "symbol" : "noDesc"
+  }, {
+    "id" : "app_java_dup",
+    "line" : 39,
+    "desc" : "重复 ID 第一次出现",
+    "symbol" : "dupOne"
+  }, {
+    "id" : "app_java_dup_2",
+    "line" : 43,
+    "desc" : "重复 ID 第二次出现，预期被重命名为 app_java_dup_2",
+    "symbol" : "dupTwo"
+  } ],
+  "samples/app.js" : [ {
+    "id" : "app_js_intro",
+    "line" : 1,
+    "desc" : "JavaScript 语料：类/方法结构、字符串内假锚点、重复 ID、单行块注释锚点",
+    "symbol" : "useHelper"
+  }, {
+    "id" : "app_js_helper_use",
+    "line" : 5,
+    "desc" : "顶层函数（锚点在 function 之上）",
+    "symbol" : "useHelper"
+  }, {
+    "id" : "app_js_class",
+    "line" : 11,
+    "desc" : "视图类",
+    "symbol" : "constructor"
+  }, {
+    "id" : "app_js_member",
+    "line" : 14,
+    "desc" : "类字段区",
+    "symbol" : "constructor"
+  }, {
+    "id" : "app_js_render",
+    "line" : 22,
+    "desc" : "渲染方法",
+    "symbol" : "render"
+  }, {
+    "id" : "app_js_fake_in_string",
+    "line" : 25,
+    "desc" : "",
+    "symbol" : "clear"
+  }, {
+    "id" : "app_js_block_style",
+    "line" : 29,
+    "desc" : "单行块注释锚点（JS 解析器与扫描器均支持）",
+    "symbol" : "clear"
+  }, {
+    "id" : "app_js_dup",
+    "line" : 36,
+    "desc" : "重复 ID 第一次"
+  }, {
+    "id" : "app_js_dup_2",
+    "line" : 40,
+    "desc" : "重复 ID 第二次（预期 app_js_dup_2）"
+  } ],
+  "samples/app.ts" : [ {
+    "id" : "app_ts_intro",
+    "line" : 1,
+    "desc" : "TypeScript 语料：接口 + 类型标注方法/字段，验证 .ts 走 JavaScript 解析器",
+    "symbol" : "add"
+  }, {
+    "id" : "app_ts_store",
+    "line" : 8,
+    "desc" : "存储服务类",
+    "symbol" : "add"
+  }, {
+    "id" : "app_ts_add",
+    "line" : 13,
+    "desc" : "新增条目",
+    "symbol" : "add"
+  }, {
+    "id" : "app_ts_count",
+    "line" : 19,
+    "desc" : "统计条目数",
+    "symbol" : "count"
+  } ],
+  "samples/app.yaml" : [ {
+    "id" : "app_yaml_intro",
+    "line" : 1,
+    "desc" : "YAML 语料：验证 # 锚点在 .yml/.yaml 上的收录"
+  }, {
+    "id" : "app_yaml_service",
+    "line" : 4,
+    "desc" : "服务配置"
+  } ],
+  "samples/build_here/keep.js" : [ {
+    "id" : "build_here_keep_js",
+    "line" : 1,
+    "desc" : "排除目录语义探针：目录名为 build_here（前缀相同但不等价）",
+    "symbol" : "buildHereKept"
+  } ],
+  "samples/config.xml" : [ {
+    "id" : "config_xml_intro",
+    "line" : 2,
+    "desc" : "XML 语料：<!-- --> 锚点写法与兜底解析器行为"
+  }, {
+    "id" : "config_xml_db",
+    "line" : 5,
+    "desc" : "数据库配置"
+  } ],
+  "samples/data.json" : [ {
+    "id" : "data_json_fake_anchor",
+    "line" : 4,
+    "desc" : ""
+  } ],
+  "samples/dist_named.js" : [ {
+    "id" : "dist_named_js",
+    "line" : 1,
+    "desc" : "排除目录语义探针：文件名含 dist 但段名不等于 dist",
+    "symbol" : "distNamedKept"
+  } ],
+  "samples/edit_target.js" : [ {
+    "id" : "edit_target_intro",
+    "line" : 1,
+    "desc" : "编辑测试目标：提供一对 start/end 锚点，用于 read/insert/delete 的区间操作"
+  }, {
+    "id" : "edit_target_scratch_start",
+    "line" : 5,
+    "desc" : "可删除区起点"
+  }, {
+    "id" : "edit_target_inserted",
+    "line" : 11,
+    "desc" : "由 insert_at_anchor 插入的锚点"
+  }, {
+    "id" : "edit_target_scratch_end",
+    "line" : 16,
+    "desc" : ""
+  }, {
+    "id" : "edit_target_tail",
+    "line" : 17,
+    "desc" : "尾部锚点"
+  } ],
+  "samples/end_rule_a.js" : [ {
+    "id" : "end_rule_a_intro",
+    "line" : 1,
+    "desc" : "命名规则探针：验证 `_end` 后缀锚点在项目索引中的可见性差异",
+    "symbol" : "endProbe"
+  }, {
+    "id" : "end_rule_a_probe_end",
+    "line" : 5,
+    "desc" : "预期: 以 _end 结尾 → 可能不进 .project_index.json（describe 不可见）",
+    "symbol" : "endProbe"
+  }, {
+    "id" : "end_rule_a_end_middle",
+    "line" : 11,
+    "desc" : "对照: 含 _end 但非后缀（中间出现）",
+    "symbol" : "endMiddle"
+  }, {
+    "id" : "end_rule_a_probe_start",
+    "line" : 17,
+    "desc" : "对照: _start 后缀",
+    "symbol" : "startProbe"
+  } ],
+  "samples/engine.cpp" : [ {
+    "id" : "engine_cpp_intro",
+    "line" : 1,
+    "desc" : "C++ 语料：块注释锚点、类与成员方法结构、#include 收集",
+    "symbol" : "run"
+  }, {
+    "id" : "engine_cpp_class",
+    "line" : 5,
+    "desc" : "引擎类",
+    "symbol" : "run"
+  }, {
+    "id" : "engine_cpp_ctor",
+    "line" : 9,
+    "desc" : "构造函数",
+    "symbol" : "run"
+  }, {
+    "id" : "engine_cpp_run",
+    "line" : 13,
+    "desc" : "运行方法",
+    "symbol" : "run"
+  }, {
+    "id" : "engine_cpp_free_fn",
+    "line" : 21,
+    "desc" : "自由函数",
+    "symbol" : "computeRpm"
+  } ],
+  "samples/engine.h" : [ {
+    "id" : "engine_h_intro",
+    "line" : 1,
+    "desc" : "C++ 头语料：仅声明，验证 .h 走 CppParser 且锚点可被收录",
+    "symbol" : "bootEngine"
+  }, {
+    "id" : "engine_h_decl",
+    "line" : 6,
+    "desc" : "声明区",
+    "symbol" : "bootEngine"
+  } ],
+  "samples/index.html" : [ {
+    "id" : "index_html_intro",
+    "line" : 3,
+    "desc" : "页面语料：HTML 注释锚点、标签结构、内联事件与内联脚本锚点差异"
+  }, {
+    "id" : "index_html_form",
+    "line" : 11,
+    "desc" : "表单区"
+  }, {
+    "id" : "index_html_inline_js",
+    "line" : 17,
+    "desc" : "预期: 扫描器可收录，HtmlParser 不收录（它只认 <!-- --> 形式）"
+  } ],
+  "samples/main.py" : [ {
+    "id" : "main_py_intro",
+    "line" : 1,
+    "desc" : "Python 语料：验证 # 锚点、缩进结构解析、字符串内假锚点、方法体内锚点",
+    "symbol" : "top_level"
+  }, {
+    "id" : "main_py_class",
+    "line" : 11,
+    "desc" : "数据仓库类",
+    "symbol" : "__init__"
+  }, {
+    "id" : "main_py_init",
+    "line" : 16,
+    "desc" : "构造函数（Python 方法 start=end=def 行，锚点在 def 之上）",
+    "symbol" : "__init__"
+  }, {
+    "id" : "main_py_inner",
+    "line" : 22,
+    "desc" : "方法体内的锚点（预期符号归属会落到其后最近的方法）",
+    "symbol" : "after_class"
+  }, {
+    "id" : "main_py_fake_in_string",
+    "line" : 24,
+    "desc" : "",
+    "symbol" : "after_class"
+  } ],
+  "samples/md_anchor_example.md" : [ {
+    "id" : "md_anchor_example_intro",
+    "line" : 1,
+    "desc" : "文档语料：验证 Markdown 中“引用锚点写法”的内联代码会被误当真实锚点收录"
+  }, {
+    "id" : "mirror_js_style",
+    "line" : 8,
+    "desc" : ""
+  }, {
+    "id" : "mirror_py_style",
+    "line" : 9,
+    "desc" : ""
+  }, {
+    "id" : "mirror_css_style",
+    "line" : 10,
+    "desc" : ""
+  }, {
+    "id" : "mirror_html_style",
+    "line" : 11,
+    "desc" : ""
+  } ],
+  "samples/nested/deep.js" : [ {
+    "id" : "nested_deep_js_intro",
+    "line" : 1,
+    "desc" : "嵌套目录语料：验证 build_anchor_index 会递归收录子目录文件"
+  } ],
+  "samples/notes.txt" : [ {
+    "id" : "notes_txt_intro",
+    "line" : 1,
+    "desc" : "纯文本语料：验证 .txt 上的锚点收录"
+  }, {
+    "id" : "notes_txt_note",
+    "line" : 3,
+    "desc" : "说明段落"
+  } ],
+  "samples/probe/min_class.js" : [ {
+    "id" : "probe_min_class_intro",
+    "line" : 1,
+    "desc" : "最小 JS 探针：含 class 与方法",
+    "symbol" : "m"
+  } ],
+  "samples/probe/min_function.js" : [ {
+    "id" : "probe_min_function_intro",
+    "line" : 1,
+    "desc" : "最小 JS 探针：含 function 与花括号",
+    "symbol" : "f"
+  } ],
+  "samples/probe/min_no_brace.js" : [ {
+    "id" : "probe_min_no_brace_intro",
+    "line" : 1,
+    "desc" : "最小 JS 探针：无花括号、无字符串"
+  } ],
+  "samples/probe/min_string.js" : [ {
+    "id" : "probe_min_string_intro",
+    "line" : 1,
+    "desc" : "最小 JS 探针：含字符串字面量"
+  } ],
+  "samples/README.md" : [ {
+    "id" : "readme_md_intro",
+    "line" : 1,
+    "desc" : "Markdown 语料：验证 .md 的锚点扫描与 get_file_structure 转发到 describe_anchors"
+  }, {
+    "id" : "readme_md_usage",
+    "line" : 6,
+    "desc" : "使用说明"
+  }, {
+    "id" : "readme_md_tail",
+    "line" : 10,
+    "desc" : "尾部锚点"
+  } ],
+  "samples/run.sh" : [ {
+    "id" : "run_sh_intro",
+    "line" : 2,
+    "desc" : "Shell 语料：验证 # 锚点与 shebang 行不产生描述"
+  }, {
+    "id" : "run_sh_main",
+    "line" : 6,
+    "desc" : "主流程"
+  } ],
+  "samples/schema.sql" : [ {
+    "id" : "schema_sql_block_style",
+    "line" : 8,
+    "desc" : "预期: 该写法可被识别（块注释形式）"
+  } ],
+  "samples/settings.properties" : [ {
+    "id" : "settings_properties_intro",
+    "line" : 1,
+    "desc" : "配置语料：验证 # 锚点在 .properties 上的收录"
+  }, {
+    "id" : "settings_properties_greeting",
+    "line" : 4,
+    "desc" : "问候语配置"
+  } ],
+  "samples/theme.css" : [ {
+    "id" : "theme_css_intro",
+    "line" : 1,
+    "desc" : "样式语料：块注释锚点、@import 与选择器结构、空行隔断描述",
+    "symbol" : ":root"
+  }, {
+    "id" : "theme_css_root",
+    "line" : 5,
+    "desc" : "根变量",
+    "symbol" : ":root"
+  }, {
+    "id" : "theme_css_button",
+    "line" : 11,
+    "desc" : "按钮样式",
+    "symbol" : ".btn"
+  }, {
+    "id" : "theme_css_nogap",
+    "line" : 17,
+    "desc" : "",
+    "symbol" : ".card"
+  }, {
+    "id" : "theme_css_no_desc_anchor",
+    "line" : 23,
+    "desc" : "预期: 上一行与描述间无空行才生效；本锚点下方紧跟空行 → 无描述"
+  } ],
+  "UPDATE.md" : [ {
+    "id" : "tools_lab_update_intro",
+    "line" : 1,
+    "desc" : "tools-lab 测试更新记录：仅追加，不修改历史条目"
+  }, {
+    "id" : "update_record_anchor",
+    "line" : 159,
+    "desc" : "追加区：新记录插入本锚点之前"
+  }, {
+    "id" : "update_record_000",
+    "line" : 162,
+    "desc" : "# [初始] lab 骨架与语料建立"
+  } ]
+}

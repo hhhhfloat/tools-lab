@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<!-- @anchor: index_html_intro -->
+<!-- 页面语料：HTML 注释锚点、标签结构、内联事件与内联脚本锚点差异 -->
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="theme.css">
+  <script src="app.js"></script>
+</head>
+<body>
+  <!-- @anchor: index_html_form -->
+  <!-- 表单区 -->
+  <input name="user" id="user">
+  <button onclick="submitForm()">提交</button>
+
+  <script>
+    // @anchor: index_html_inline_js
+    // 预期: 扫描器可收录，HtmlParser 不收录（它只认 <!-- --> 形式）
+    function submitForm() {
+      console.log("submit");
+    }
+  </script>
+</body>
+</html>

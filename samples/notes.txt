@@ -1,0 +1,5 @@
+# @anchor: notes_txt_intro
+# 纯文本语料：验证 .txt 上的锚点收录
+# @anchor: notes_txt_note
+# 说明段落
+这里是纯文本，没有结构信息。

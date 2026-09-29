@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @anchor: config_xml_intro -->
+<!-- XML 语料：<!-- --> 锚点写法与兜底解析器行为 -->
+<config>
+  <!-- @anchor: config_xml_db -->
+  <!-- 数据库配置 -->
+  <database host="127.0.0.1" port="5432"/>
+</config>

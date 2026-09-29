@@ -1,0 +1,6 @@
+{
+  "name": "tools-lab",
+  "_comment": "JSON 无注释语法，这里验证字符串内的假锚点是否被扫描器误收录",
+  "anchorLike": "// @anchor: data_json_fake_anchor",
+  "version": 1
+}

@@ -1,0 +1,24 @@
+/* @anchor: theme_css_intro */
+/* 样式语料：块注释锚点、@import 与选择器结构、空行隔断描述 */
+@import url("reset.css");
+
+/* @anchor: theme_css_root */
+/* 根变量 */
+:root {
+  --bg: #ffffff;
+}
+
+/* @anchor: theme_css_button */
+/* 按钮样式 */
+.btn {
+  color: #333;
+}
+
+/* @anchor: theme_css_nogap */
+
+.card {
+  padding: 4px;
+}
+
+/* @anchor: theme_css_no_desc_anchor */
+/* 预期: 上一行与描述间无空行才生效；本锚点下方紧跟空行 → 无描述 */

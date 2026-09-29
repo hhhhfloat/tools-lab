@@ -1,0 +1,534 @@
+{
+  "dup/Same.java" : [ {
+    "id" : "dup_same_shared",
+    "line" : 1,
+    "preview" : "// @anchor: dup_same_shared"
+  }, {
+    "id" : "dup_same_local",
+    "line" : 6,
+    "preview" : "// @anchor: dup_same_local"
+  } ],
+  "dup2/Same.java" : [ {
+    "id" : "dup_same_shared",
+    "line" : 1,
+    "preview" : "// @anchor: dup_same_shared"
+  }, {
+    "id" : "dup2_same_local",
+    "line" : 6,
+    "preview" : "// @anchor: dup2_same_local"
+  } ],
+  "harness/anchor_oracle.py" : [ {
+    "id" : "anchor_oracle_intro",
+    "line" : 1,
+    "preview" : "# @anchor: anchor_oracle_intro"
+  }, {
+    "id" : "oracle_spec",
+    "line" : 9,
+    "preview" : "# @anchor: oracle_spec"
+  }, {
+    "id" : "oracle_exclusions",
+    "line" : 27,
+    "preview" : "# @anchor: oracle_exclusions"
+  }, {
+    "id" : "oracle_extract_desc",
+    "line" : 43,
+    "preview" : "# @anchor: oracle_extract_desc"
+  }, {
+    "id" : "oracle_scan",
+    "line" : 86,
+    "preview" : "# @anchor: oracle_scan"
+  }, {
+    "id" : "oracle_report_sink",
+    "line" : 120,
+    "preview" : "# @anchor: oracle_report_sink"
+  }, {
+    "id" : "oracle_load_index",
+    "line" : 148,
+    "preview" : "# @anchor: oracle_load_index"
+  }, {
+    "id" : "oracle_known_diffs",
+    "line" : 159,
+    "preview" : "# @anchor: oracle_known_diffs"
+  }, {
+    "id" : "oracle_d2_sentinel",
+    "line" : 165,
+    "preview" : "# @anchor: oracle_d2_sentinel"
+  }, {
+    "id" : "oracle_main",
+    "line" : 201,
+    "preview" : "# @anchor: oracle_main"
+  }, {
+    "id" : "oracle_resolve_project",
+    "line" : 309,
+    "preview" : "# @anchor: oracle_resolve_project"
+  } ],
+  "harness/hello_probe.py" : [ {
+    "id" : "hello_probe_py_intro",
+    "line" : 1,
+    "preview" : "# @anchor: hello_probe_py_intro"
+  } ],
+  "harness/js_strip_probe.py" : [ {
+    "id" : "js_strip_probe_intro",
+    "line" : 1,
+    "preview" : "# @anchor: js_strip_probe_intro"
+  }, {
+    "id" : "js_strip_probe_old",
+    "line" : 15,
+    "preview" : "# @anchor: js_strip_probe_old"
+  }, {
+    "id" : "js_strip_probe_new",
+    "line" : 35,
+    "preview" : "# @anchor: js_strip_probe_new"
+  }, {
+    "id" : "js_strip_probe_evidence",
+    "line" : 66,
+    "preview" : "# @anchor: js_strip_probe_evidence"
+  }, {
+    "id" : "js_strip_probe_main",
+    "line" : 83,
+    "preview" : "# @anchor: js_strip_probe_main"
+  } ],
+  "probe/adjacent_probe.js" : [ {
+    "id" : "adj_probe_intro",
+    "line" : 1,
+    "preview" : "// @anchor: adj_probe_intro"
+  }, {
+    "id" : "adj_start",
+    "line" : 4,
+    "preview" : "// @anchor: adj_start"
+  }, {
+    "id" : "adj_end",
+    "line" : 5,
+    "preview" : "// @anchor: adj_end"
+  } ],
+  "probe/deep/nested/i.js" : [ {
+    "id" : "probe_deep_nested_js",
+    "line" : 1,
+    "preview" : "// @anchor: probe_deep_nested_js"
+  } ],
+  "probe/edit_roundtrip.js" : [ {
+    "id" : "rt_intro",
+    "line" : 1,
+    "preview" : "// @anchor: rt_intro"
+  }, {
+    "id" : "rt_start",
+    "line" : 7,
+    "preview" : "// @anchor: rt_start"
+  }, {
+    "id" : "rt_end",
+    "line" : 10,
+    "preview" : "// @anchor: rt_end"
+  } ],
+  "probe/security/anchor_regex_probe.py" : [ {
+    "id" : "anchor_regex_probe_intro",
+    "line" : 1,
+    "preview" : "# @anchor: anchor_regex_probe_intro"
+  }, {
+    "id" : "demo_token",
+    "line" : 13,
+    "preview" : "print(\"anchors=\", count_anchors(\"// @anchor: demo_token\"))"
+  } ],
+  "probe/security/traversal_recheck.py" : [ {
+    "id" : "traversal_recheck_intro",
+    "line" : 1,
+    "preview" : "# @anchor: traversal_recheck_intro"
+  }, {
+    "id" : "traversal_recheck_count",
+    "line" : 12,
+    "preview" : "# @anchor: traversal_recheck_count"
+  } ],
+  "probe/src/s.java" : [ {
+    "id" : "probe_src_java",
+    "line" : 1,
+    "preview" : "// @anchor: probe_src_java"
+  } ],
+  "probe/v3_edit_probe.js" : [ {
+    "id" : "v3_edit_probe_intro",
+    "line" : 1,
+    "preview" : "// @anchor: v3_edit_probe_intro"
+  }, {
+    "id" : "v3_edit_start",
+    "line" : 9,
+    "preview" : "// @anchor: v3_edit_start"
+  }, {
+    "id" : "v3_edit_end",
+    "line" : 13,
+    "preview" : "// @anchor: v3_edit_end"
+  } ],
+  "PROJECT.md" : [ {
+    "id" : "tools_lab_project_intro",
+    "line" : 1,
+    "preview" : "<!-- @anchor: tools_lab_project_intro -->"
+  }, {
+    "id" : "lab_positioning",
+    "line" : 4,
+    "preview" : "<!-- @anchor: lab_positioning -->"
+  }, {
+    "id" : "lab_structure",
+    "line" : 8,
+    "preview" : "<!-- @anchor: lab_structure -->"
+  }, {
+    "id" : "lab_method",
+    "line" : 20,
+    "preview" : "<!-- @anchor: lab_method -->"
+  }, {
+    "id" : "lab_conventions",
+    "line" : 29,
+    "preview" : "<!-- @anchor: lab_conventions -->"
+  }, {
+    "id" : "lab_findings",
+    "line" : 37,
+    "preview" : "<!-- @anchor: lab_findings -->"
+  }, {
+    "id" : "lab_run",
+    "line" : 58,
+    "preview" : "<!-- @anchor: lab_run -->"
+  } ],
+  "samples/App.java" : [ {
+    "id" : "app_java_intro",
+    "line" : 1,
+    "preview" : "// @anchor: app_java_intro"
+  }, {
+    "id" : "app_java_field_area",
+    "line" : 14,
+    "preview" : "// @anchor: app_java_field_area"
+  }, {
+    "id" : "app_java_method_sum",
+    "line" : 20,
+    "preview" : "// @anchor: app_java_method_sum"
+  }, {
+    "id" : "app_java_inline_desc",
+    "line" : 26,
+    "preview" : "// @anchor: app_java_inline_desc"
+  }, {
+    "id" : "app_java_no_desc",
+    "line" : 32,
+    "preview" : "// @anchor: app_java_no_desc"
+  }, {
+    "id" : "app_java_fake_in_string",
+    "line" : 35,
+    "preview" : "String fake = \"// @anchor: app_java_fake_in_string\";"
+  }, {
+    "id" : "app_java_dup",
+    "line" : 39,
+    "preview" : "// @anchor: app_java_dup"
+  }, {
+    "id" : "app_java_dup_2",
+    "line" : 43,
+    "preview" : "// @anchor: app_java_dup"
+  } ],
+  "samples/app.js" : [ {
+    "id" : "app_js_intro",
+    "line" : 1,
+    "preview" : "// @anchor: app_js_intro"
+  }, {
+    "id" : "app_js_helper_use",
+    "line" : 5,
+    "preview" : "// @anchor: app_js_helper_use"
+  }, {
+    "id" : "app_js_class",
+    "line" : 11,
+    "preview" : "// @anchor: app_js_class"
+  }, {
+    "id" : "app_js_member",
+    "line" : 14,
+    "preview" : "// @anchor: app_js_member"
+  }, {
+    "id" : "app_js_render",
+    "line" : 22,
+    "preview" : "// @anchor: app_js_render"
+  }, {
+    "id" : "app_js_fake_in_string",
+    "line" : 25,
+    "preview" : "const fake = \"// @anchor: app_js_fake_in_string\";"
+  }, {
+    "id" : "app_js_block_style",
+    "line" : 29,
+    "preview" : "/* @anchor: app_js_block_style */"
+  }, {
+    "id" : "app_js_dup",
+    "line" : 36,
+    "preview" : "// @anchor: app_js_dup"
+  }, {
+    "id" : "app_js_dup_2",
+    "line" : 40,
+    "preview" : "// @anchor: app_js_dup"
+  } ],
+  "samples/app.ts" : [ {
+    "id" : "app_ts_intro",
+    "line" : 1,
+    "preview" : "// @anchor: app_ts_intro"
+  }, {
+    "id" : "app_ts_store",
+    "line" : 8,
+    "preview" : "// @anchor: app_ts_store"
+  }, {
+    "id" : "app_ts_add",
+    "line" : 13,
+    "preview" : "// @anchor: app_ts_add"
+  }, {
+    "id" : "app_ts_count",
+    "line" : 19,
+    "preview" : "// @anchor: app_ts_count"
+  } ],
+  "samples/app.yaml" : [ {
+    "id" : "app_yaml_intro",
+    "line" : 1,
+    "preview" : "# @anchor: app_yaml_intro"
+  }, {
+    "id" : "app_yaml_service",
+    "line" : 4,
+    "preview" : "# @anchor: app_yaml_service"
+  } ],
+  "samples/build_here/keep.js" : [ {
+    "id" : "build_here_keep_js",
+    "line" : 1,
+    "preview" : "// @anchor: build_here_keep_js"
+  } ],
+  "samples/config.xml" : [ {
+    "id" : "config_xml_intro",
+    "line" : 2,
+    "preview" : "<!-- @anchor: config_xml_intro -->"
+  }, {
+    "id" : "config_xml_db",
+    "line" : 5,
+    "preview" : "<!-- @anchor: config_xml_db -->"
+  } ],
+  "samples/data.json" : [ {
+    "id" : "data_json_fake_anchor",
+    "line" : 4,
+    "preview" : "\"anchorLike\": \"// @anchor: data_json_fake_anchor\","
+  } ],
+  "samples/dist_named.js" : [ {
+    "id" : "dist_named_js",
+    "line" : 1,
+    "preview" : "// @anchor: dist_named_js"
+  } ],
+  "samples/edit_target.js" : [ {
+    "id" : "edit_target_intro",
+    "line" : 1,
+    "preview" : "// @anchor: edit_target_intro"
+  }, {
+    "id" : "edit_target_scratch_start",
+    "line" : 5,
+    "preview" : "// @anchor: edit_target_scratch_start"
+  }, {
+    "id" : "edit_target_inserted",
+    "line" : 11,
+    "preview" : "// @anchor: edit_target_inserted"
+  }, {
+    "id" : "edit_target_scratch_end",
+    "line" : 16,
+    "preview" : "// @anchor: edit_target_scratch_end"
+  }, {
+    "id" : "edit_target_tail",
+    "line" : 17,
+    "preview" : "// @anchor: edit_target_tail"
+  } ],
+  "samples/end_rule_a.js" : [ {
+    "id" : "end_rule_a_intro",
+    "line" : 1,
+    "preview" : "// @anchor: end_rule_a_intro"
+  }, {
+    "id" : "end_rule_a_probe_end",
+    "line" : 5,
+    "preview" : "// @anchor: end_rule_a_probe_end"
+  }, {
+    "id" : "end_rule_a_end_middle",
+    "line" : 11,
+    "preview" : "// @anchor: end_rule_a_end_middle"
+  }, {
+    "id" : "end_rule_a_probe_start",
+    "line" : 17,
+    "preview" : "// @anchor: end_rule_a_probe_start"
+  } ],
+  "samples/engine.cpp" : [ {
+    "id" : "engine_cpp_intro",
+    "line" : 1,
+    "preview" : "/* @anchor: engine_cpp_intro */"
+  }, {
+    "id" : "engine_cpp_class",
+    "line" : 5,
+    "preview" : "// @anchor: engine_cpp_class"
+  }, {
+    "id" : "engine_cpp_ctor",
+    "line" : 9,
+    "preview" : "// @anchor: engine_cpp_ctor"
+  }, {
+    "id" : "engine_cpp_run",
+    "line" : 13,
+    "preview" : "// @anchor: engine_cpp_run"
+  }, {
+    "id" : "engine_cpp_free_fn",
+    "line" : 21,
+    "preview" : "// @anchor: engine_cpp_free_fn"
+  } ],
+  "samples/engine.h" : [ {
+    "id" : "engine_h_intro",
+    "line" : 1,
+    "preview" : "// @anchor: engine_h_intro"
+  }, {
+    "id" : "engine_h_decl",
+    "line" : 6,
+    "preview" : "// @anchor: engine_h_decl"
+  } ],
+  "samples/index.html" : [ {
+    "id" : "index_html_intro",
+    "line" : 3,
+    "preview" : "<!-- @anchor: index_html_intro -->"
+  }, {
+    "id" : "index_html_form",
+    "line" : 11,
+    "preview" : "<!-- @anchor: index_html_form -->"
+  }, {
+    "id" : "index_html_inline_js",
+    "line" : 17,
+    "preview" : "// @anchor: index_html_inline_js"
+  } ],
+  "samples/main.py" : [ {
+    "id" : "main_py_intro",
+    "line" : 1,
+    "preview" : "# @anchor: main_py_intro"
+  }, {
+    "id" : "main_py_class",
+    "line" : 11,
+    "preview" : "# @anchor: main_py_class"
+  }, {
+    "id" : "main_py_init",
+    "line" : 16,
+    "preview" : "# @anchor: main_py_init"
+  }, {
+    "id" : "main_py_inner",
+    "line" : 22,
+    "preview" : "# @anchor: main_py_inner"
+  }, {
+    "id" : "main_py_fake_in_string",
+    "line" : 24,
+    "preview" : "fake = \"# @anchor: main_py_fake_in_string\""
+  } ],
+  "samples/md_anchor_example.md" : [ {
+    "id" : "md_anchor_example_intro",
+    "line" : 1,
+    "preview" : "<!-- @anchor: md_anchor_example_intro -->"
+  }, {
+    "id" : "mirror_js_style",
+    "line" : 8,
+    "preview" : "- JS 风格示例：`// @anchor: mirror_js_style`"
+  }, {
+    "id" : "mirror_py_style",
+    "line" : 9,
+    "preview" : "- Python 风格示例：`# @anchor: mirror_py_style`"
+  }, {
+    "id" : "mirror_css_style",
+    "line" : 10,
+    "preview" : "- CSS 风格示例：`/* @anchor: mirror_css_style */`"
+  }, {
+    "id" : "mirror_html_style",
+    "line" : 11,
+    "preview" : "- HTML 风格示例：`<!-- @anchor: mirror_html_style -->`"
+  } ],
+  "samples/nested/deep.js" : [ {
+    "id" : "nested_deep_js_intro",
+    "line" : 1,
+    "preview" : "// @anchor: nested_deep_js_intro"
+  } ],
+  "samples/notes.txt" : [ {
+    "id" : "notes_txt_intro",
+    "line" : 1,
+    "preview" : "# @anchor: notes_txt_intro"
+  }, {
+    "id" : "notes_txt_note",
+    "line" : 3,
+    "preview" : "# @anchor: notes_txt_note"
+  } ],
+  "samples/probe/min_class.js" : [ {
+    "id" : "probe_min_class_intro",
+    "line" : 1,
+    "preview" : "// @anchor: probe_min_class_intro"
+  } ],
+  "samples/probe/min_function.js" : [ {
+    "id" : "probe_min_function_intro",
+    "line" : 1,
+    "preview" : "// @anchor: probe_min_function_intro"
+  } ],
+  "samples/probe/min_no_brace.js" : [ {
+    "id" : "probe_min_no_brace_intro",
+    "line" : 1,
+    "preview" : "// @anchor: probe_min_no_brace_intro"
+  } ],
+  "samples/probe/min_string.js" : [ {
+    "id" : "probe_min_string_intro",
+    "line" : 1,
+    "preview" : "// @anchor: probe_min_string_intro"
+  } ],
+  "samples/README.md" : [ {
+    "id" : "readme_md_intro",
+    "line" : 1,
+    "preview" : "<!-- @anchor: readme_md_intro -->"
+  }, {
+    "id" : "readme_md_usage",
+    "line" : 6,
+    "preview" : "<!-- @anchor: readme_md_usage -->"
+  }, {
+    "id" : "readme_md_tail",
+    "line" : 10,
+    "preview" : "<!-- @anchor: readme_md_tail -->"
+  } ],
+  "samples/run.sh" : [ {
+    "id" : "run_sh_intro",
+    "line" : 2,
+    "preview" : "# @anchor: run_sh_intro"
+  }, {
+    "id" : "run_sh_main",
+    "line" : 6,
+    "preview" : "# @anchor: run_sh_main"
+  } ],
+  "samples/schema.sql" : [ {
+    "id" : "schema_sql_block_style",
+    "line" : 8,
+    "preview" : "/* @anchor: schema_sql_block_style */"
+  } ],
+  "samples/settings.properties" : [ {
+    "id" : "settings_properties_intro",
+    "line" : 1,
+    "preview" : "# @anchor: settings_properties_intro"
+  }, {
+    "id" : "settings_properties_greeting",
+    "line" : 4,
+    "preview" : "# @anchor: settings_properties_greeting"
+  } ],
+  "samples/theme.css" : [ {
+    "id" : "theme_css_intro",
+    "line" : 1,
+    "preview" : "/* @anchor: theme_css_intro */"
+  }, {
+    "id" : "theme_css_root",
+    "line" : 5,
+    "preview" : "/* @anchor: theme_css_root */"
+  }, {
+    "id" : "theme_css_button",
+    "line" : 11,
+    "preview" : "/* @anchor: theme_css_button */"
+  }, {
+    "id" : "theme_css_nogap",
+    "line" : 17,
+    "preview" : "/* @anchor: theme_css_nogap */"
+  }, {
+    "id" : "theme_css_no_desc_anchor",
+    "line" : 23,
+    "preview" : "/* @anchor: theme_css_no_desc_anchor */"
+  } ],
+  "UPDATE.md" : [ {
+    "id" : "tools_lab_update_intro",
+    "line" : 1,
+    "preview" : "<!-- @anchor: tools_lab_update_intro -->"
+  }, {
+    "id" : "update_record_anchor",
+    "line" : 159,
+    "preview" : "<!-- @anchor: update_record_anchor -->"
+  }, {
+    "id" : "update_record_000",
+    "line" : 162,
+    "preview" : "<!-- @anchor: update_record_000 -->"
+  } ]
+}
