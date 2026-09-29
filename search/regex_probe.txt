@@ -1,0 +1,10 @@
+parse(a)
+parse(b)
+a+b
+a.b
+aXb
+[tag]
+end$
+pipe|alt
+\d+
+预期: 用于验证 keyword 被当作正则编译；非法正则应返回「关键词正则表达式错误」

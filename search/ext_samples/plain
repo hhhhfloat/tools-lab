@@ -1,0 +1,2 @@
+NOEXTNEEDLE 无扩展名文件不在 TEXT_EXTENSIONS 白名单
+预期: 默认搜索不命中；显式 file_pattern='plain' 命中

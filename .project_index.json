@@ -82,6 +82,12 @@
     "line" : 1,
     "desc" : "探针：验证 python 运行模式可用"
   } ],
+  "harness/index_snapshot.py" : [ {
+    "id" : "index_snapshot_intro",
+    "line" : 1,
+    "desc" : "索引快照工具：定位项目根后打印两份索引的文件集合并对比（D1 哨兵），供 io-02 与 delete_file 用例取证。",
+    "symbol" : "find_base"
+  } ],
   "harness/io_oracle.py" : [ {
     "id" : "io_oracle_intro",
     "line" : 1,
@@ -91,30 +97,30 @@
     "id" : "io_oracle_spec",
     "line" : 28,
     "desc" : "规格抽取：正则解析只读源码里的常量与消息模板（纯文本匹配，不执行任何代码）",
-    "symbol" : "extract_spec"
+    "symbol" : "_body"
   }, {
     "id" : "io_oracle_known_diffs",
-    "line" : 51,
-    "desc" : "已知差异白名单：已记录在 PROJECT.md 台账，出现即不算回归",
+    "line" : 78,
+    "desc" : "已知差异 / 已知未修项白名单：记录在案的差异（见 PROJECT.md 台账），出现即不算回归",
     "symbol" : "java_len"
   }, {
     "id" : "io_oracle_helpers",
-    "line" : 61,
+    "line" : 90,
     "desc" : "工具函数：UTF-16 计数（对齐 Java String.length）与索引读取",
     "symbol" : "java_len"
   }, {
     "id" : "io_oracle_baseline",
-    "line" : 75,
+    "line" : 104,
     "desc" : "实测基线：每条为一次真实工具调用观察到的结果，逐条与源码规格判定",
     "symbol" : "run_checks"
   }, {
     "id" : "io_oracle_checks",
-    "line" : 113,
-    "desc" : "自动校验：沙箱事实 + 两份索引，逐条给 PASS/FAIL",
+    "line" : 159,
+    "desc" : "自动校验：沙箱事实 + 两份索引 + 源码口径，逐条给 PASS/FAIL",
     "symbol" : "run_checks"
   }, {
     "id" : "io_oracle_main",
-    "line" : 174,
+    "line" : 231,
     "desc" : "入口：输出规格、基线判定、自动校验与最终 RESULT，并落盘报告",
     "symbol" : "main"
   } ],
@@ -142,6 +148,37 @@
     "id" : "js_strip_probe_main",
     "line" : 83,
     "desc" : "对照语料行：旧/新算法是否改动原行、锚点/类正则是否仍能命中，并汇总工具侧 symbol 证据",
+    "symbol" : "main"
+  } ],
+  "harness/search_oracle.py" : [ {
+    "id" : "search_oracle_intro",
+    "line" : 1,
+    "desc" : "search_text 差分校验器：从只读源码抽规格 + 独立重实现搜索语义 → 与实测转录逐条差分 → 报告落盘 lab-out/search-report.txt。",
+    "symbol" : "__init__"
+  }, {
+    "id" : "search_oracle_spec",
+    "line" : 29,
+    "desc" : "规格抽取：TEXT_EXTENSIONS / MAX_RESULTS / 预览截断阈值 / 排除集 / 消息模板（纯文本匹配，不执行源码）",
+    "symbol" : "_body"
+  }, {
+    "id" : "search_oracle_ref",
+    "line" : 75,
+    "desc" : "参照实现：复刻 TextSearcher.searchText 的文件收集 / 扩展名过滤 / 正则 find / 预览 / 30 条上限",
+    "symbol" : "parse_file_patterns"
+  }, {
+    "id" : "search_oracle_cases",
+    "line" : 148,
+    "desc" : "实测转录：每条为一次真实 search_text 调用的「文件:行号」集合（相对 path 参数），由参照实现独立重算对比",
+    "symbol" : "run_checks"
+  }, {
+    "id" : "search_oracle_checks",
+    "line" : 190,
+    "desc" : "规格与不变量校验：源码常量、消息模板、截断规则、sc-01 死分支",
+    "symbol" : "run_checks"
+  }, {
+    "id" : "search_oracle_main",
+    "line" : 226,
+    "desc" : "入口：规格 → 转录差分 → 不变量校验 → 观测记录 → RESULT，并落盘报告",
     "symbol" : "main"
   } ],
   "probe/adjacent_probe.js" : [ {
@@ -246,23 +283,23 @@
     "desc" : "# 整体结构"
   }, {
     "id" : "lab_method",
-    "line" : 25,
+    "line" : 29,
     "desc" : "# 关键决策"
   }, {
     "id" : "lab_conventions",
-    "line" : 36,
+    "line" : 44,
     "desc" : "# 规范约定"
   }, {
     "id" : "lab_findings",
-    "line" : 46,
-    "desc" : "# 工具行为差异台账（状态以 v4 回归为准）"
+    "line" : 54,
+    "desc" : "# 工具行为差异台账（状态以 v5 回归为准）"
   }, {
     "id" : "lab_io",
-    "line" : 69,
-    "desc" : "read_file / write_file 实测口径（v4），供后续用例参照"
+    "line" : 87,
+    "desc" : "read_file / write_file / delete_file / search_text 实测口径（v5），供后续用例参照"
   }, {
     "id" : "lab_run",
-    "line" : 83,
+    "line" : 112,
     "desc" : "# 运行方式"
   } ],
   "samples/App.java" : [ {
@@ -642,17 +679,22 @@
     "line" : 23,
     "desc" : "预期: 上一行与描述间无空行才生效；本锚点下方紧跟空行 → 无描述"
   } ],
+  "search/idx_stale.js" : [ {
+    "id" : "search_idx_stale_probe",
+    "line" : 2,
+    "desc" : "删除后索引刷新时机探针：带一个锚点，用于观察 delete_file 是否触发索引清理"
+  } ],
   "UPDATE.md" : [ {
     "id" : "tools_lab_update_intro",
     "line" : 1,
     "desc" : "tools-lab 测试更新记录：仅追加，不修改历史条目"
   }, {
     "id" : "update_record_anchor",
-    "line" : 248,
+    "line" : 313,
     "desc" : "追加区：新记录插入本锚点之前"
   }, {
     "id" : "update_record_000",
-    "line" : 251,
+    "line" : 316,
     "desc" : "# [初始] lab 骨架与语料建立"
   } ]
 }

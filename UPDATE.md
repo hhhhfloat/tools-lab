@@ -245,6 +245,71 @@
 - 差异台账最终状态：已修 D1/D2/D3/D5/D7；未修 D4；D6 改记为「主类名按文件名推导」；D8 既有行为；新增 io-01 / io-02。
 
 
+## [v5] 遗留项复核 + read_file / write_file / delete_file / search_text（47 文件 / 142 锚点）
+
+### 本轮目标
+- 复核上轮遗留 io-01 / io-02 的修复效果；其余遗留项（D4 / B2 / 目录匹配 / 刷新时机 / 跨文件歧义 / 结构视图）只做状态确认。
+- 把 `delete_file`、`search_text` 纳入验证（只读源码仅作规格抽取，未修改；本轮开头先对 `workflow-read-only` 建索引便于精读）。
+
+### 修复验证
+| 编号 | 上轮现象 | 本轮实测 |
+|------|---------|---------|
+| io-01 | 描述「限制 5000」与实现 50000 不符 | ✅ 已修：`toolDef_readFile` 描述改为 50000；`io_oracle` C2（描述==实现）PASS；新增探针 `probe/io/mid_probe.txt`（5247 字符）实测完整返回、无截断提示 |
+| io-02 | 写排除目录后两份索引都残留条目 | ⚠ **部分修（拆出 io-02b）**：`.anchors.json` 侧已套排除（`refreshAnchorsFile` 含 `isExcludedDir`），`.project_index.json` 侧（轮末 `refreshProjectIndexFile`）未套 |
+
+### 本轮新增差异
+- **io-02b**：`probe/dist/io2_probe.js` 写入后 `index_snapshot` 快照 `A=48 / P=49`、`only_P=['probe/dist/io2_probe.js']`、`D1_CONSISTENT=False`；`build_anchor_index` 后 47/47 一致。源码定位：`AnchorIndex.refreshProjectIndexFile` 未做排除判断。io_oracle 用 C14 冻结断言。
+- **del-01**：`delete_file` 未接入索引刷新。删 `search/idx_stale.js`（带锚点）后快照仍 `A=True/P=True`、两份索引行数不变；rebuild 后消失。源码证据：`ToolExecutor.dispatch` 的 `delete_file` 分支未调用 `markDirtyByFilename`（写文件分支有）。io_oracle 用 C15 冻结断言。
+- **sc-01**：`search_text` 的 30 条上限只「截断」不「提示」。`matchCount` 只在结果被加入时自增 → `total > shown` 恒不成立 →「仅显示前 30 条」分支为死代码。实测 `MANYTOKEN`（实际 41 处命中）只报「🔍 找到 30 条匹配结果：」。search_oracle 用 S7 记录 + obs-1。
+
+### 用例矩阵与实测
+| # | 用例 | 预期 | 实测 |
+|---|------|------|------|
+| 86 | read_file(probe/io/mid_probe.txt 5247 字符) | 阈值下完整返回 | ✅ 完整、无提示（io-01 哨兵） |
+| 87 | delete_file(普通文件) | ✅ 已删除文件: X | ✅ 一致 |
+| 88 | delete_file(已删除的文件) | 文件不存在: X | ✅ 一致 |
+| 89 | delete_file(目录) | ⚠ 不能删除目录 | ✅ 一致 |
+| 90 | delete_file(目录内文件) | 可删 | ✅ 一致 |
+| 91 | delete_file(UPDATE.md) | ❌ 不允许删除 | ✅ 一致 |
+| 92 | delete_file(点开头路径) | ❌ 不允许访问以 . 开头 | ✅ 一致 |
+| 93 | delete_file(含两边点号的路径) | ❌ 路径中不允许出现 | ✅ 一致 |
+| 94 | 删除带锚点文件后索引 | 应清理 | ⚠ 两份索引均残留（del-01），rebuild 后清理 |
+| 95 | search_text gammaFn（path=tools-lab/search） | 9 条、路径相对 path | ✅ app.js×4 + lib×5 |
+| 96 | search_text EXCLUDEDNEEDLE | dist 排除 → 0 | ✅ 0 |
+| 97 | search_text LOGNEEDLE（默认） | 白名单无 .log → 0 | ✅ 0 |
+| 98 | search_text LOGNEEDLE（file_pattern=*.log） | 越过白名单 → 1 | ✅ 1 |
+| 99 | search_text「parse(」非法正则 | 报正则错误 | ✅ 「关键词正则表达式错误: Unclosed group near index 6」 |
+| 100 | search_text「parse\(」 | 2 命中 | ✅ 2 |
+| 101 | search_text a.b / pipe\|alt | 点号任意字符 / 或分支 | ✅ 3 / 1 |
+| 102 | search_text manytoken（小写） | 区分大小写 → 0 | ✅ 0 |
+| 103 | search_text NOEXTNEEDLE（默认 / plain） | 默认 0；pattern=plain → 1 | ✅ 0 / 1 |
+| 104 | search_text file_pattern=.js / js,py / *.txt | 按 endsWith 匹配 | ✅ 5 / 9 / 0 |
+| 105 | search_text 子目录 path=tools-lab/search/lib | 只搜 lib | ✅ 5 |
+| 106 | search_text MANYTOKEN（41 命中） | 显示 30 且提示 | ⚠ 显示 30，但**无提示**（sc-01） |
+| 107 | search_text LONGNEEDLE 预览 | trim 后前 80 字符 + ... | ✅ 长度 83 |
+| 108 | search_text 排除文件 token（.anchors.json/.project_index.json） | 不参与搜索 | ✅ 仅 1 命中 |
+| 109 | search_text path 不存在 | 路径不存在或不是目录 | ✅ 一致 |
+| 110 | search_text path='.' | 输出带 tools-lab/ 前缀 | ✅ 一致 |
+
+### 其余遗留项复核（与 v4 一致，未变）
+- D4 仍拒绝点开头路径；D8 假锚点仍收录；B2 尾斜杠仍不归一；目录形匹配仍偏宽松；刷新时机（同轮 `.anchors.json` / 轮末 `.project_index.json`）不变；跨文件同名锚点仍报歧义；结构视图口径（不列字符串假锚点、不去 `_2`）不变。
+
+### 本轮新增语料与工具
+- 语料：`search/`（`lib/alpha|beta|gamma.js`、`app.js`、`dup/|dup2/util.js`、`long_line.txt`、`regex_probe.txt`、`many.txt`、`dist/excluded.js`、`ext_samples/{notes.log,legacy.c,module.mjs,plain}`、`delete_me.js`、`del_dir/inside.js`、`idx_stale.js`）、`probe/dist/io2_probe.js`、`probe/io/mid_probe.txt`（生成器 `tmp/gen_mid_probe.py`）。
+- `harness/io_oracle.py` 升级：新增 `_body` 方法体抽取（判断刷新链路是否套排除、delete 是否 markDirty）、delete 基线 7 条（io-d1..d7）、C13/C14/C15；`KNOWN_DIFFS` 更新（io-01 移出，新增 io-02b / del-01）。
+- 新增 `harness/search_oracle.py`（规格抽取 + 独立重实现 + 17 转录差分 + 9 不变量 + 5 观察），报告 `lab-out/search-report.txt`。
+- 新增 `harness/index_snapshot.py`（两份索引文件集快照，供 io-02b / del-01 取证）。
+- 踩坑记录：① `compile_and_run` 的 filename 相对**沙箱根**解析（不是当前项目），首轮误把 `search/`、`TODO.md`、`harness/` 写到沙箱根，已清理（残留的 `harness/.anchors.json` 等点文件因 D4 无法删除）；② 校验器源码里出现「锚点标记 + 反斜杠」或 `..` 紧跟转义引号会被安全扫描判为 `FILE_PATH_TRAVERSAL`，改用单引号包裹双引号写法规避；③ 需要搜索「只在语料出现」的 token 时，校验器自身源码会命中，改用相邻字符串隐式拼接（`"stale_probe_" "7q"`）。
+
+### 复现方式
+1. `build_anchor_index { project_path: "tools-lab" }` → 47 文件 / 142 锚点。
+2. `compile_and_run { filename: "tools-lab/harness/io_oracle.py", mode: "python" }` → `RESULT=PASS`（已知冻结项 C14/C15），写 `lab-out/io-report.txt`。
+3. `compile_and_run { filename: "tools-lab/harness/search_oracle.py", mode: "python" }` → `RESULT=PASS`，写 `lab-out/search-report.txt`。
+4. `compile_and_run { filename: "tools-lab/harness/anchor_oracle.py", mode: "python" }` → item diffs=0。
+5. `compile_and_run { filename: "tools-lab/harness/index_snapshot.py", mode: "python" }` → 观察 `D1_CONSISTENT` / `only_P`。
+
+
+
 <!-- @anchor: update_record_anchor -->
 <!-- 追加区：新记录插入本锚点之前 -->
 

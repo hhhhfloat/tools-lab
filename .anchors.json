@@ -67,6 +67,11 @@
     "line" : 1,
     "preview" : "# @anchor: hello_probe_py_intro"
   } ],
+  "harness/index_snapshot.py" : [ {
+    "id" : "index_snapshot_intro",
+    "line" : 1,
+    "preview" : "# @anchor: index_snapshot_intro"
+  } ],
   "harness/io_oracle.py" : [ {
     "id" : "io_oracle_intro",
     "line" : 1,
@@ -77,23 +82,23 @@
     "preview" : "# @anchor: io_oracle_spec"
   }, {
     "id" : "io_oracle_known_diffs",
-    "line" : 51,
+    "line" : 78,
     "preview" : "# @anchor: io_oracle_known_diffs"
   }, {
     "id" : "io_oracle_helpers",
-    "line" : 61,
+    "line" : 90,
     "preview" : "# @anchor: io_oracle_helpers"
   }, {
     "id" : "io_oracle_baseline",
-    "line" : 75,
+    "line" : 104,
     "preview" : "# @anchor: io_oracle_baseline"
   }, {
     "id" : "io_oracle_checks",
-    "line" : 113,
+    "line" : 159,
     "preview" : "# @anchor: io_oracle_checks"
   }, {
     "id" : "io_oracle_main",
-    "line" : 174,
+    "line" : 231,
     "preview" : "# @anchor: io_oracle_main"
   } ],
   "harness/js_strip_probe.py" : [ {
@@ -116,6 +121,31 @@
     "id" : "js_strip_probe_main",
     "line" : 83,
     "preview" : "# @anchor: js_strip_probe_main"
+  } ],
+  "harness/search_oracle.py" : [ {
+    "id" : "search_oracle_intro",
+    "line" : 1,
+    "preview" : "# @anchor: search_oracle_intro"
+  }, {
+    "id" : "search_oracle_spec",
+    "line" : 29,
+    "preview" : "# @anchor: search_oracle_spec"
+  }, {
+    "id" : "search_oracle_ref",
+    "line" : 75,
+    "preview" : "# @anchor: search_oracle_ref"
+  }, {
+    "id" : "search_oracle_cases",
+    "line" : 148,
+    "preview" : "# @anchor: search_oracle_cases"
+  }, {
+    "id" : "search_oracle_checks",
+    "line" : 190,
+    "preview" : "# @anchor: search_oracle_checks"
+  }, {
+    "id" : "search_oracle_main",
+    "line" : 226,
+    "preview" : "# @anchor: search_oracle_main"
   } ],
   "probe/adjacent_probe.js" : [ {
     "id" : "adj_probe_intro",
@@ -213,23 +243,23 @@
     "preview" : "<!-- @anchor: lab_structure -->"
   }, {
     "id" : "lab_method",
-    "line" : 25,
+    "line" : 29,
     "preview" : "<!-- @anchor: lab_method -->"
   }, {
     "id" : "lab_conventions",
-    "line" : 36,
+    "line" : 44,
     "preview" : "<!-- @anchor: lab_conventions -->"
   }, {
     "id" : "lab_findings",
-    "line" : 46,
+    "line" : 54,
     "preview" : "<!-- @anchor: lab_findings -->"
   }, {
     "id" : "lab_io",
-    "line" : 69,
+    "line" : 87,
     "preview" : "<!-- @anchor: lab_io -->"
   }, {
     "id" : "lab_run",
-    "line" : 83,
+    "line" : 112,
     "preview" : "<!-- @anchor: lab_run -->"
   } ],
   "samples/App.java" : [ {
@@ -566,17 +596,22 @@
     "line" : 23,
     "preview" : "/* @anchor: theme_css_no_desc_anchor */"
   } ],
+  "search/idx_stale.js" : [ {
+    "id" : "search_idx_stale_probe",
+    "line" : 2,
+    "preview" : "// @anchor: search_idx_stale_probe"
+  } ],
   "UPDATE.md" : [ {
     "id" : "tools_lab_update_intro",
     "line" : 1,
     "preview" : "<!-- @anchor: tools_lab_update_intro -->"
   }, {
     "id" : "update_record_anchor",
-    "line" : 248,
+    "line" : 313,
     "preview" : "<!-- @anchor: update_record_anchor -->"
   }, {
     "id" : "update_record_000",
-    "line" : 251,
+    "line" : 316,
     "preview" : "<!-- @anchor: update_record_000 -->"
   } ]
 }

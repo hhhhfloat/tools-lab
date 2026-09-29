@@ -8,7 +8,7 @@ exclude dir segments = 24
 skip dot-named files = True
 spec version         = v3 (js/ts structure sentinel + index-set sentinel)
 
-== INDEX SIZE == anchors.json files=44, project_index.json files=44
+== INDEX SIZE == anchors.json files=47, project_index.json files=47
    note: .anchors.json carries id/line/preview only; desc lives in .project_index.json
    two index file sets identical -> D1 (missing _end in project index) NOT reproduced
 
@@ -17,8 +17,10 @@ spec version         = v3 (js/ts structure sentinel + index-set sentinel)
   [OK] dup2/Same.java oracle=2 index=2
   [OK] harness/anchor_oracle.py oracle=11 index=11
   [OK] harness/hello_probe.py oracle=1 index=1
+  [OK] harness/index_snapshot.py oracle=1 index=1
   [OK] harness/io_oracle.py oracle=7 index=7
   [OK] harness/js_strip_probe.py oracle=5 index=5
+  [OK] harness/search_oracle.py oracle=6 index=6
   [OK] probe/adjacent_probe.js oracle=3 index=3
   [OK] probe/deep/nested/i.js oracle=1 index=1
   [OK] probe/edit_roundtrip.js oracle=3 index=3
@@ -56,8 +58,9 @@ spec version         = v3 (js/ts structure sentinel + index-set sentinel)
   [OK] samples/schema.sql oracle=1 index=1
   [OK] samples/settings.properties oracle=2 index=2
   [OK] samples/theme.css oracle=5 index=5
+  [OK] search/idx_stale.js oracle=1 index=1
   [OK] UPDATE.md oracle=3 index=3
-  excluded-by-dir (must be absent from index): ['classes/HelloRoot.class', 'harness/classes/AnchorOracle.class', 'harness/classes/HelloProbe.class', 'probe/__pycache__/p.py', 'probe/dist/d.js', 'probe/dist/inside_write.js', 'probe/java_sub/classes/Hello.class', 'probe/java_sub/classes/Other.class', 'probe/java_sub/pkg/classes/probe/java_sub/pkg/P.class', 'probe/node_modules/n.js', 'probe/target/t.java', 'samples/pkg_inner/dist/inside.js']
+  excluded-by-dir (must be absent from index): ['harness/classes/AnchorOracle.class', 'harness/classes/HelloProbe.class', 'probe/__pycache__/p.py', 'probe/dist/d.js', 'probe/dist/inside_write.js', 'probe/dist/io2_probe.js', 'probe/node_modules/n.js', 'probe/target/t.java', 'samples/pkg_inner/dist/inside.js', 'search/dist/excluded.js']
 
 == PER-ITEM DIFF (id/line/desc) ==
   no diff
@@ -69,8 +72,10 @@ spec version         = v3 (js/ts structure sentinel + index-set sentinel)
   dup2/Same.java: dup_same_shared->ping  dup2_same_local->ping
   harness/anchor_oracle.py: anchor_oracle_intro->is_excluded_rel  oracle_spec->is_excluded_rel  oracle_exclusions->is_excluded_rel  oracle_extract_desc->extract_desc  oracle_scan->scan  oracle_report_sink->__init__  oracle_load_index->load_index  oracle_known_diffs->is_known_project_index_gap  oracle_d2_sentinel->check_d2  oracle_main->main  oracle_resolve_project->resolve_project
   harness/hello_probe.py: hello_probe_py_intro->None
-  harness/io_oracle.py: io_oracle_intro->__init__  io_oracle_spec->extract_spec  io_oracle_known_diffs->java_len  io_oracle_helpers->java_len  io_oracle_baseline->run_checks  io_oracle_checks->run_checks  io_oracle_main->main
+  harness/index_snapshot.py: index_snapshot_intro->find_base
+  harness/io_oracle.py: io_oracle_intro->__init__  io_oracle_spec->_body  io_oracle_known_diffs->java_len  io_oracle_helpers->java_len  io_oracle_baseline->run_checks  io_oracle_checks->run_checks  io_oracle_main->main
   harness/js_strip_probe.py: js_strip_probe_intro->strip_old  js_strip_probe_old->strip_old  js_strip_probe_new->strip_new  js_strip_probe_evidence->collect_evidence  js_strip_probe_main->main
+  harness/search_oracle.py: search_oracle_intro->__init__  search_oracle_spec->_body  search_oracle_ref->parse_file_patterns  search_oracle_cases->run_checks  search_oracle_checks->run_checks  search_oracle_main->main
   probe/adjacent_probe.js: adj_probe_intro->None  adj_start->None  adj_end->None
   probe/deep/nested/i.js: probe_deep_nested_js->None
   probe/edit_roundtrip.js: rt_intro->None  rt_start->None  rt_end->None
@@ -107,6 +112,7 @@ spec version         = v3 (js/ts structure sentinel + index-set sentinel)
   samples/schema.sql: schema_sql_block_style->None
   samples/settings.properties: settings_properties_intro->None  settings_properties_greeting->None
   samples/theme.css: theme_css_intro->:root  theme_css_root->:root  theme_css_button->.btn  theme_css_nogap->.card  theme_css_no_desc_anchor->None
+  search/idx_stale.js: search_idx_stale_probe->None
 
 == D2 SENTINEL (js/ts structure symbols) ==
   probe/adjacent_probe.js symbols=0/3 []
@@ -125,8 +131,9 @@ spec version         = v3 (js/ts structure sentinel + index-set sentinel)
   samples/probe/min_function.js symbols=1/1 ['f']
   samples/probe/min_no_brace.js symbols=0/1 []
   samples/probe/min_string.js symbols=0/1 []
+  search/idx_stale.js symbols=0/1 []
   all 7 sentinel js/ts files carry symbols -> D2 (empty JS structure) NOT reproduced
 
 == SUMMARY ==
-oracle files=44, item diffs=0, file-level problems=0, excluded files=12
+oracle files=47, item diffs=0, file-level problems=0, excluded files=10
 RESULT=PASS

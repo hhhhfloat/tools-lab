@@ -1,0 +1,2 @@
+LOGNEEDLE 该扩展名 .log 不在 TEXT_EXTENSIONS 白名单
+预期: 默认搜索（无 file_pattern）不命中；显式 file_pattern='*.log' 命中

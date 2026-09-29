@@ -1,0 +1,60 @@
+== search_text oracle ==
+[spec] extensions=26 max_results=30 preview_limit=80 excluded_dirs=24 excluded_files=5 declared_max=30
+[extensions] .java .html .htm .css .js .jsx .ts .tsx .txt .xml .json .md .properties .yml .yaml .sh .bat .gradle .sql .cpp .cc .cxx .h .hpp .py .pyw
+
+[diff] 参照实现 vs 工具实测转录
+  D01 PASS   普通关键词 + 输出相对 path 的路径
+        kw='gammaFn' pat=None path=tools-lab/search  ref=9 exp=9
+  D02 PASS   排除目录 dist 不参与搜索
+        kw='EXCLUDEDNEEDLE' pat=None path=tools-lab/search  ref=0 exp=0
+  D03 PASS   默认扩展名白名单不含 .log
+        kw='LOGNEEDLE' pat=None path=tools-lab/search  ref=0 exp=0
+  D04 PASS   显式 file_pattern 越过默认白名单
+        kw='LOGNEEDLE' pat='*.log' path=tools-lab/search  ref=1 exp=1
+  D05 PASS   转义后的正则元字符
+        kw='parse\\(' pat=None path=tools-lab/search  ref=2 exp=2
+  D06 PASS   正则点号 = 任意字符
+        kw='a.b' pat=None path=tools-lab/search  ref=3 exp=3
+  D07 PASS   正则或分支
+        kw='pipe|alt' pat=None path=tools-lab/search  ref=1 exp=1
+  D08 PASS   Pattern 默认区分大小写
+        kw='manytoken' pat=None path=tools-lab/search  ref=0 exp=0
+  D09 PASS   无扩展名文件不在白名单
+        kw='NOEXTNEEDLE' pat=None path=tools-lab/search  ref=0 exp=0
+  D10 PASS   file_pattern 按 fileName.endsWith 匹配
+        kw='NOEXTNEEDLE' pat='plain' path=tools-lab/search  ref=1 exp=1
+  D11 PASS   file_pattern=*.js + 限定子目录
+        kw='gammaFn' pat='*.js' path=tools-lab/search/lib  ref=5 exp=5
+  D12 PASS   file_pattern 直接给扩展名
+        kw='gammaFn' pat='.js' path=tools-lab/search/lib  ref=5 exp=5
+  D13 PASS   file_pattern 逗号多值（无点也匹配）
+        kw='gammaFn' pat='js,py' path=tools-lab/search  ref=9 exp=9
+  D14 PASS   模式不匹配则 0 命中
+        kw='gammaFn' pat='*.txt' path=tools-lab/search  ref=0 exp=0
+  D15 PASS   子串命中（含后缀 token；dist 命中被排除）
+        kw='NEEDLE' pat=None path=tools-lab/search  ref=1 exp=1
+  D16 PASS   命中 41 条 → 只显示前 30（sc-01：总数被截为 30）
+        kw='MANYTOKEN' pat=None path=tools-lab/search  ref=30 exp=30
+  D17 PASS   排除文件（.anchors.json/.project_index.json）不参与搜索
+        kw='stale_probe_7q' pat='.*' path=tools-lab  ref=1 exp=1
+
+[checks] 规格与不变量
+  S1   PASS   MAX_RESULTS 抽取 == 30 | max_results=30
+  S2   PASS   预览截断阈值 == 80 | preview_limit=80
+  S3   PASS   工具声明上限 == 实现上限 | 声明=30 实现=30
+  S4   PASS   默认白名单含 .js/.txt/.py，不含 .log/.c/.mjs | extensions=26 项
+  S5   PASS   排除目录含 dist/target/node_modules | excluded_dirs=24 项
+  S6   PASS   排除文件含 .anchors.json/.project_index.json | excluded_files=5 项
+  S7   PASS   sc-01：计数发生在上限判断之后 → 「仅显示前 N 条」为死分支 | guard_before_count=True more_hint=True
+  S8   PASS   preview = trim 后前 80 字符 + '...'（长度 83） | len=83
+  S9   PASS   消息模板齐备（未找到 / 路径不存在 / 关键词正则错误） | no_match=True badpath=True badregex=True
+
+[observations]
+  obs-1  命中 41 条的查询只报「🔍 找到 30 条匹配结果：」，无「仅显示前 30 条」提示（sc-01 死分支）
+  obs-2  keyword 按 Java 正则编译：a.b 命中 a+b/a.b/aXb；pipe|alt 生效；默认区分大小写（manytoken 0 命中）
+  obs-3  file_pattern 走 fileName.endsWith / 扩展名比对：'plain' / '.js' / 'js,py' 均可；'*' 之类不匹配则 0 命中
+  obs-4  非法正则 parse( → 「关键词正则表达式错误: Unclosed group near index 6」
+  obs-5  path 不存在 → 「路径不存在或不是目录: X」；path='.' 时输出带 'tools-lab/' 前缀
+
+[failures] none
+RESULT=PASS

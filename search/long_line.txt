@@ -1,0 +1,3 @@
+LONGNEEDLE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ENDNEEDLE
+普通行：本行不含目标
+预期: 该行 trim 后 >80 字符，search_text 预览应截断为前 80 字符 + "..."
