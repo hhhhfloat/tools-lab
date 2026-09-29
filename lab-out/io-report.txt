@@ -1,0 +1,74 @@
+== io oracle ==
+[spec] {"declared_read_limit": 5000, "delete_dir_msg": true, "dot_refusal": true, "dotdot_refusal": true, "max_length": 50000, "read_absent_msg": true, "read_header_fmt": true, "trunc_note": true, "update_md_delete_refusal": true, "update_md_read_refusal": true, "write_atomic": true, "write_err_prefix": true, "write_ok_fmt": true}
+
+[baseline] 实测条目 vs 源码规格
+  io-r1  KNOWN(io-01) read_file(13775 字符无锚点文件) 完整返回，无截断提示
+         期望: 阈值 > 13775
+         实测: 完整返回 300 行，无提示
+  io-r2  OK        read_file(samples/long-text.log) 截断并附提示
+         期望: 截断点 = MAX_LENGTH(UTF-16)
+         实测: 截断点≈java 50000，附标准提示
+  io-r3  OK        read_file(UPDATE.md) 拒绝
+         期望: 按 checkPath 拒绝
+         实测: ❌ UPDATE.md 不支持完整读取…
+  io-r4  KNOWN(d4) read_file(点开头路径) 拒绝
+         期望: 按 checkPath 拒绝
+         实测: ❌ 不允许访问以 . 开头的文件/目录…
+  io-r5  OK        read_file(缺失/目录/目录带尾斜杠)
+         期望: 统一回「文件不存在或是一个目录: X」
+         实测: 三种输入同一文案
+  io-r6  OK        read_file(0 字节文件)
+         期望: 只回头部无内容
+         实测: 📄 文件 empty.txt 内容已阅读
+  io-w1  OK        write_file 新建 + 多级目录自动创建
+         期望: 返回 ✅ filename 并建目录
+         实测: ✅ 4 级目录 + 文件落地
+  io-w2  OK        write_file 覆盖已存在文件
+         期望: 整文件替换
+         实测: VERSION-1 → VERSION-2 生效
+  io-w3  OK        write_file 无结尾换行内容
+         期望: 逐字写入，不补换行
+         实测: nonl.txt bytes=14 无 LF
+  io-w4  OK        write_file 含 CRLF 内容
+         期望: 不归一化，原样落盘
+         实测: crlf=2 / lf=3
+  io-w5  KNOWN(d4) write_file(点开头路径)
+         期望: 按 checkPath 拒绝
+         实测: ❌ 不允许访问以 . 开头的文件/目录…
+  io-w6  OK        write_file(目标是已存在目录)
+         期望: IOException → 写入文件失败
+         实测: 写入文件失败: <abs>/samples
+  io-w7  OK        write_file(父路径是文件)
+         期望: IOException → 写入文件失败
+         实测: 写入文件失败: <abs>/probe/io/noext
+  io-w8  OK        write_file(尾斜杠 + 不存在路径)
+         期望: Path 归一化 → 落成普通文件
+         实测: dir_target 为文件（22 字节）
+  io-w9  OK        write_file(名字含反斜杠)
+         期望: 反斜杠当分隔符 → 建子目录
+         实测: bsep/name.txt
+  io-w10 KNOWN(io-02) write_file(排除目录 dist/)
+         期望: 写入成功但索引应排除
+         实测: 写入成功；即时刷新进了索引，rebuild 后被清理
+
+[checks] 自动校验
+  C1   PASS   源码 MAX_LENGTH 抽取 | MAX_LENGTH=50000
+  C2   FAIL   read_file 描述阈值 vs 实现阈值 | 描述=5000 实现=50000 → io-01
+  C3   PASS   long-text.log 超阈值（应触发截断路径） | java_len=82028 > 50000
+  C4   PASS   13775 字符探针在声明阈值之上、实现阈值之下 | java_len=13775
+  C5   PASS   write_file 不追加结尾换行 | bytes=14
+  C6   PASS   write_file 保留 CRLF 不归一化 | crlf=2 lf=3
+  C7   PASS   两份索引文件集一致（D1 哨兵） | A=44 P=44 only_A=[]
+  C8   PASS   排除目录条目已被 rebuild 清理 | dist 条目不在索引中
+  C9   PASS   tmp 脚本不得污染索引（约定：不写锚点字面量） | tmp=[]
+  C10  PASS   新写入文件经轮末 flush 后可见且带 symbol | entry=[{'id': 'refresh_probe_intro', 'line': 1, 'desc': '同轮刷新时机探针：写入后同轮 describe 应不可见，下一轮才可见', 'symbol': 'refreshProbe'}]
+  C11  PASS   D8 假锚点行为冻结 | ids=['md_anchor_example_intro', 'mirror_js_style', 'mirror_py_style', 'mirror_css_style', 'mirror_html_style']
+  C12  PASS   无锚点长文件不入索引 | long-text.log/trunc_probe.txt 缺席
+
+[known diffs] d4, io-01, io-02
+  d4      点开头路径一律拒绝（write_file/read_file 均如此）
+  io-01   read_file 声明阈值 5000 与实现阈值 50000 不符（描述陈旧）
+  io-02   write_file 即时刷新不套用排除目录规则，条目须等 rebuild 清理
+
+[unexpected failures] none
+RESULT=PASS

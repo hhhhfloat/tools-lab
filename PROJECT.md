@@ -3,57 +3,82 @@
 
 <!-- @anchor: lab_positioning -->
 ## 项目定位
-验证型实验项目：用真实工具（describe_anchors / build_anchor_index / read_between_anchors / insert_at_anchor / delete_between_anchors / get_file_structure）驱动多语言语料，记录「预期行为 vs 实测行为」，形成可复现的锚点工具测试基线与差异台账。被测工具的只读源码副本位于 `workflow-read-only/`，本 lab 不修改、不编译、不依赖其产物。
+验证型实验项目：用真实工具驱动多语言语料，记录「预期行为 vs 实测行为」，形成可复现的测试基线与差异台账。
+- 锚点工具组：`describe_anchors` / `build_anchor_index` / `read_between_anchors` / `insert_at_anchor` / `delete_between_anchors` / `get_file_structure`。
+- IO 工具组：`read_file` / `write_file`（v4 起纳入验证）。
+被测工具的只读源码副本位于 `workflow-read-only/`，本 lab 不修改、不编译、不依赖其产物；源码只用于抽取规格（正则读取常量与消息模板）。
+
 
 <!-- @anchor: lab_structure -->
 ## 整体结构
-- `samples/`：多语言语料（每文件首个锚点为 `*_intro`），覆盖正常与边界写法；`samples/probe/` 为结构解析最小化探针。
-- `samples/pkg_inner/dist/`、`samples/dist_named.js`、`samples/build_here/`：排除目录「段精确匹配」语义探针（应排除 / 应收录 / 应收录）。
-- `probe/`：索引排除目录探针（node_modules / target / dist / `__pycache__` / src / deep/nested）、区间编辑往返（`probe/edit_roundtrip.js`、`probe/v3_edit_probe.js`）、相邻端点（`probe/adjacent_probe.js`）、安全扫描误报（`probe/security/`）。
-- `dup/`、`dup2/`：同名文件 + 同名锚点，用于消歧与歧义报错测试。
-- `samples/end_rule_a.js`、`samples/edit_target.js`：命名规则与区间编辑的专用探针。
-- `harness/anchor_oracle.py`：独立实现的锚点扫描参照器 + 差分校验器（排除目录规格、两份索引文件集一致性、D1 与 D2 回归哨兵），输出落盘 `lab-out/oracle-report.txt`。
-- `harness/js_strip_probe.py`：JS 解析器「旧步长 2 / 新步长 1」双向探针 + 工具侧 symbol 证据（`D2_FIXED`）。
-- `lab-out/oracle-report.txt`：校验器落盘的报告（每次运行覆盖）。
+- `samples/`：多语言语料（每文件首个锚点为 `*_intro`）；`samples/probe/` 结构解析最小化探针；`samples/long-text.log` 为 80k 字符无锚点长文本（read_file 截断用例）。
+- `probe/`：索引排除目录探针、区间编辑往返、相邻端点、安全扫描误报；`probe/io/` 为 IO 行为探针（截断、0 字节、无结尾换行、CRLF、多级目录、反斜杠、尾斜杠、缺失/目录/点路径）。
+- `dup/`、`dup2/`：同名文件 + 同名锚点，用于消歧与歧义报错。
+- `harness/anchor_oracle.py`：锚点扫描参照器 + 两份索引差分（含 D1/D2 哨兵），报告 `lab-out/oracle-report.txt`。
+- `harness/io_oracle.py`：read_file/write_file 规格抽取 + 实测基线 + 12 条自动校验，报告 `lab-out/io-report.txt`。
+- `harness/js_strip_probe.py`：JS 取字算法「旧步长 2 / 新步长 1」双向探针。
+- `tmp/`：一次性分析脚本（去锚点化，不污染索引）。
+- `lab-out/`：校验器落盘报告（每次运行覆盖）。
 - `UPDATE.md`：测试记录（只追加）。
+
 
 <!-- @anchor: lab_method -->
 ## 关键决策
 - **黑盒驱动**：不改被测源码，全部通过工具调用观察行为，任何 Agent 都能复现同一结论。
-- **规格 oracle 差分**：把只读源码里的扫描规格（扩展名白名单、4 种注释风格正则、描述紧邻规则、文件内重名加 `_2`、排除目录段、点开头文件）独立重写为参照实现，再与工具产出的两份索引逐条比对，把“肉眼观察”变成可判定 PASS/CHECK 的自动对照。
-- **回归哨兵**：已修复的差异不删白名单，而是改成“必须不再出现”的哨兵（`_end` 锚点缺于项目索引判 D1 回归；哨兵 JS/TS 文件失去全部 symbol 判 D2 回归）。
-- **语料即断言**：语料注释统一以 `预期:` 开头写明期望结果，回归时按行核对。
-- **报告落盘**：校验器用 Tee 把输出同时写入 `lab-out/oracle-report.txt`，避免证据只存在于一次对话里。
-- **探针可复原**：编辑类探针（insert/delete）用完即用 `write_file` 写回基准内容，保证每轮回归起点一致。
+- **规格 oracle 差分**：把只读源码里的扫描规格（扩展名白名单、4 种注释风格正则、描述紧邻规则、文件内重名加 `_2`、排除目录段、点开头文件）独立重写为参照实现，再与工具产出的两份索引逐条比对，把「肉眼观察」变成可判定 PASS/CHECK 的自动对照。
+- **IO 规格抽取**：`io_oracle` 用正则从 FileOperator / ToolExecutor / ToolDefinitions 抽常量与消息模板（不执行源码），与实测基线、沙箱事实比对；schema 描述与实现不符同样计为差异（io-01）。
+- **回归哨兵**：已修复的差异不删白名单，而是改成「必须不再出现」的哨兵（两份索引文件集一致 = D1；哨兵 JS/TS 必须带 symbol = D2；`tmp/` 不得进索引 = C9）。
+- **语料即断言**：语料注释统一以 `预期:` 开头写明期望结果。
+- **报告落盘**：两个校验器都用 Tee 同时写 `lab-out/`，避免证据只存在于一次对话里。
+- **探针可复原**：编辑类探针用完即用 `write_file` 写回基准内容。
+
 
 <!-- @anchor: lab_conventions -->
 ## 规范约定
 - 锚点 ID 一律 `<文件>_<模块>_<功能>`（小写+下划线），文件内唯一；需故意重名时用 `_dup` 命名。
 - 描述注释必须紧贴锚点下一行，不留空行；块注释锚点只在同一行闭合时可用。
-- 文档（本文件、UPDATE.md）内部不写锚点写法字面量，演示统一放 `samples/md_anchor_example.md`，避免污染索引。
-- 校验器与探针输出统一用 ASCII 关键字 + UTF-8 输出流，规避 Windows 控制台编码问题。
+- 文档正文、`tmp/` 脚本、harness 自身一律不写锚点写法字面量（需要时用 `"@"+"anchor"` 拼接或 `anchor-id:` 前缀），避免污染索引（io_oracle C9 哨兵）。
+- 校验器与探针输出统一用 ASCII 关键字 + UTF-8 输出流（`sys.stdout.reconfigure`）；个别字符在 GBK 控制台可能显示为乱码，以落盘报告为准。
 - 编辑类用例一律用「专用探针文件 + 事后复原」，不直接改动既有语料。
+- 素材类内容（长文本、图集数据等用户提供物）不修改。
+
 
 <!-- @anchor: lab_findings -->
-## 工具行为差异台账（D 系列 + 观察项；状态以 v3 回归为准）
-### 已修复（v3 实测确认）
-- **D1 已修** `_end` 后缀锚点同时进入两份索引，`.anchors.json` 与 `.project_index.json` 文件集完全一致。
-- **D2 已修** JS/TS 结构解析恢复：`stripStringsOnly` 取字步长修为 1（转义成对跳过、字符串整体跳过）。`get_file_structure` 对 `.js`/`.ts`/`.mjs` 正常输出类/方法/顶层函数/锚点，JS 锚点 symbol 不再恒为 None。哨兵：`harness/anchor_oracle.py` 的 D2 SENTINEL + `harness/js_strip_probe.py` 的 `D2_FIXED=True`。
-- **D3 已修** 索引复用 `SearchFileFilter.DEFAULT_EXCLUDED_DIRS`（24 个目录段，精确段匹配）并跳过点开头文件，与全文搜索口径一致。
-- **D5 已修** describe 三态可区分：文件存在但无锚点 → 「文件存在，但未标注任何锚点」；目录存在但无锚点 → 「目录存在，但目录下没有锚点记录」；路径不存在 → 「不存在，或没有锚点记录」。
-- **D7 已修** 源码含「锚点标记 + 反斜杠转义」（正则字面量）不再被误判为盘符路径；复测语料 `probe/security/traversal_recheck.py` 可正常写入并收录。
-
+## 工具行为差异台账（状态以 v4 回归为准）
+### 已修复（v3 实测确认，v4 保持）
+- **D1 已修** `_end` 后缀锚点同时进入两份索引，文件集一致（v4 复核 42/42 一致）。
+- **D2 已修** JS/TS 结构解析恢复，symbol 正常输出；哨兵见两个 oracle。
+- **D3 已修** 索引复用 `SearchFileFilter.DEFAULT_EXCLUDED_DIRS`（24 段精确匹配）并跳过点开头文件。
+- **D5 已修** describe 三态可区分：文件无锚点 / 目录无锚点 / 路径不存在。
+- **D7 已修** 含「锚点标记 + 反斜杠」的正则字面量不再被误判为盘符路径。
 ### 未修复 / 既有行为
-- **D4 未修** 点路径不可写：`write_file` 拒绝 `.hidden/...`（提示文案已引导改用 describe_anchors / get_file_structure），故「点目录是否被索引排除」仍无法构造验证。
-- **D6 未修** `compile_and_run(mode=java)` 在子目录推导出错主类名 → ClassNotFoundException；本 lab 统一用 Python 模式。
-- **D8 既有行为** 文档/字符串里的锚点写法字面量会被收录（假阳性，描述为空）；演示固定在 `samples/md_anchor_example.md`，文档正文不写该字面量。
+- **D4 未修** 点开头路径一律拒绝（`read_file` / `write_file` / `delete_file` 同一文案），故「点目录是否被索引排除」仍无法构造；要看索引请用 Python 侧读取。
+- **D6 部分改记（v4 复核）** java 模式在根目录 / 子目录 / 子目录 + `package` 三种形态均运行成功，原「子目录必失败（CNFE）」未复现；剩余限制是**主类名按文件名推导、不解析源码**：文件名与主类名不一致时（`probe/java_sub/Sub.java` 内为非 public 类 `Other`）报 `ClassNotFoundException: Sub`。对照探针 `probe/java_sub/{Hello,Sub}.java`。
+- **D8 既有行为** 文档/字符串里的锚点写法字面量被收录（假阳性、desc 为空）；v4 复核仍存在（`samples/md_anchor_example.md` 的 4 个 `mirror_*`）。
+### v4 新增（IO 行为）
+- **io-01 描述与实现不符** `read_file` 的 schema 描述写「限制 5000 字符」，实现是 `MAX_LENGTH=50000`（UTF-16 计数）。实测：13775 字符文件完整返回、81843 字符文件在 java≈50000 处截断并附标准提示。
+- **io-02 即时刷新绕过排除规则** `write_file` 触发的索引刷新不套用排除目录过滤，写入 `probe/dist/` 的文件会进两份索引，直到 `build_anchor_index` 重建才清理。规避：写完排除目录后补一次 rebuild。
+### v4 复核确认（仍存在，属既定口径）
+- **B2 尾斜杠不归一**：`describe_anchors(file='samples/')` → 「目录存在，但目录下没有锚点记录」；`write_file(".../dir_target/")` → 落成名为 `dir_target` 的普通文件。规避：目录形不带尾斜杠。
+- **目录形匹配偏宽松**：`file='probe'` 会连带收录 `samples/probe/*`（`contains("/"+dir+"/")`）。
+- **索引刷新时机**：同轮内 `.anchors.json` 即时更新、`.project_index.json` 轮末 flush；同轮 describe 新文件 → 「文件存在，但未标注任何锚点」，下一轮可见且带 symbol（C10 哨兵）。
+- **跨文件同名锚点报歧义**：`file='Same.java'` 报歧义并列出 `dup/Same.java`、`dup2/Same.java`。
+- **结构视图口径差异**：`get_file_structure(samples/app.js)` 列 8 条锚点 —— 字符串内假锚点不出现、同文件重名不做 `_2` 去重（两处均为 `app_js_dup`），与索引（9 条、含 `app_js_fake_in_string` / `app_js_dup_2`）不同口径。
 
-### 本轮新增观察（非缺陷，属既定实现口径）
-- **B2 目录形提示词带尾斜杠不归一**：`file='samples'` 正常出概览（B1 已修），但 `file='samples/'` 落到「目录存在，但目录下没有锚点记录」——`matchesDir` 未做尾斜杠归一。规避：目录形写 `samples`。
-- **目录形匹配偏宽松**：`file='probe'` 同时命中 `samples/probe/*`（匹配含 `contains("/" + dir + "/")`），概览会跨目录收录同名子目录。
-- **索引刷新时机**：编辑类工具在同一轮内只即时刷新 `.anchors.json`（行号可用），`.project_index.json`（desc/symbol，describe 的数据源）在本轮结束时 flush；故同一轮内新建文件 describe 看不到、下一轮才可见。
-- **结构视图的锚点清单与索引有差异**：`get_file_structure` 按「去字符串后的行」收集锚点（字符串内假锚点不出现），且不做同文件重名 `_2` 去重。
-- **跨文件同名锚点在写/读路径报歧义**：`dup_same_shared` 因同时存在于 `dup/` 与 `dup2/` 而在未指定 `file` 时报错并列出候选。
+
+<!-- @anchor: lab_io -->
+<!-- read_file / write_file 实测口径（v4），供后续用例参照 -->
+## read_file / write_file 实测口径
+- `read_file` 正常：`📄 文件 <name> 内容已阅读` + 原文（原样输出，不补/不剪换行）；0 字节文件只回头部。
+- `read_file` 缺失 / 目录 / 目录带尾斜杠：统一 `文件不存在或是一个目录: <name>`。
+- `read_file` 超阈值：截断到 50000（UTF-16）并附 `\n... [文件过长，已截断。如需完整内容请告知]`。
+- `read_file` 名为 `UPDATE.md`：拒绝并提示改用 `read_between_anchors`（`delete_file` 对其同样拒绝）。
+- `read_file` / `write_file` 点开头路径：拒绝并引导 `describe_anchors` / `get_file_structure`。
+- `write_file` 成功：`✅ <filename>`；自动创建多级父目录；整文件覆盖；逐字写入（不补结尾换行、CRLF 不归一化）。
+- `write_file` 名字含反斜杠：按路径分隔符处理（生成子目录）；路径带尾斜杠且不存在时：落成同名普通文件。
+- `write_file` 失败（目标是目录 / 父路径是文件）：`写入文件失败: <绝对路径或 src -> dst>`（消息含沙箱绝对路径，注意不要外传）。
+- 补充运行方式：第 6 步 IO 差分校验 —— `compile_and_run`（mode=`python`）运行 `harness/io_oracle.py`，输出 `RESULT=PASS` 并写 `lab-out/io-report.txt`。
+
 
 <!-- @anchor: lab_run -->
 ## 运行方式

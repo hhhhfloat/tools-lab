@@ -156,6 +156,95 @@
 3. `compile_and_run { filename: "tools-lab/harness/js_strip_probe.py", mode: "python" }` → `D2_FIXED=True`（旧算法 `ANCHOR_LINES_LOST_BY_OLD=10`）。
 
 
+## [v4] 遗留项复核 + read_file / write_file 测试（43 文件 / 142 锚点）
+
+### 本轮目标
+- 复核 v3 遗留问题：D4 / D6 / D8 / B2 / 目录形匹配 / 索引刷新时机 / 跨文件歧义 / 结构视图口径。
+- 把 `read_file` / `write_file` 纳入验证（旧只读源码仅作规格抽取，未修改；先对 `workflow-read-only` 建索引便于精读）。
+
+### 本轮新增语料与工具
+- `samples/long-text.log`：约 8.2 万字符（UTF-16）、1376 行、CRLF、无锚点无结构 —— 截断用例。
+- `probe/io/`：`trunc_probe.txt`（13775 字符带行号）、`empty.txt`、`nonl.txt`、`crlf.txt`、`unicode.txt`、`deep/a/b/c/d.txt`、`nested_new/a.txt`、`bsep/name.txt`、`noext`、`with space.txt`、`dir_target`（尾斜杠产物）、`overwrite.txt`、`UPDATE.md`、`refresh_probe.js`。
+- `probe/dist/inside_write.js`：写入排除目录的探针。
+- `harness/io_oracle.py`：规格抽取（正则读源码）+ 16 条实测基线 + 12 条自动校验，Tee 落盘 `lab-out/io-report.txt`。
+- `tmp/`：`inspect_io.py` / `analyze_log.py` / `boundary.py` / `boundary2.py` / `dump_index.py` / `verify_io.py`（一次性分析脚本，已去锚点化）。
+
+### 用例矩阵与实测（编号接 v3）
+| # | 用例 | 预期 | 实测 |
+| --- | --- | --- | --- |
+| 53 | read_file(notes.txt 小文件) | 头部 + 原文 | 一致 |
+| 54 | read_file(trunc_probe.txt 13775 字符) | 完整返回 | 完整 300 行，无提示 → io-01 |
+| 55 | read_file(long-text.log) | 截断并提示 | java≈50000 处截断 + 标准提示 |
+| 56 | read_file(缺失路径) | 文件不存在… | 一致 |
+| 57 | read_file(目录 / 目录带尾斜杠) | 文件不存在或是一个目录 | 三者同文案 |
+| 58 | read_file(0 字节文件) | 仅头部 | 一致 |
+| 59 | read_file(点开头路径) | 拒绝 | ❌ 不允许访问以 . 开头（D4） |
+| 60 | read_file(名为 UPDATE.md) | 拒绝 | ❌ 提示改用 read_between_anchors |
+| 61 | read_file(反斜杠路径) | 正常 | 一致 |
+| 62 | read_file(unicode.txt) | 原样 | 中文/emoji/tab 原样 |
+| 63 | write_file(新建 + 多级目录) | ✅ 并建目录 | ✅（nested_new/a.txt、deep/a/b/c/d.txt） |
+| 64 | write_file(覆盖已有文件) | 整文件替换 | VERSION-1 → VERSION-2 |
+| 65 | write_file(空内容) | 0 字节 | 0 字节 |
+| 66 | write_file(无结尾换行) | 不补换行 | bytes=14，无 LF |
+| 67 | write_file(含 CRLF) | 不归一化 | crlf=2 / lf=3 |
+| 68 | write_file(名字含空格) | ✅ | 一致 |
+| 69 | write_file(名字含反斜杠) | 当分隔符 | 生成 bsep/name.txt |
+| 70 | write_file(无扩展名) | ✅ | 一致 |
+| 71 | write_file(尾斜杠 + 不存在) | Path 归一化 | 落成普通文件 dir_target |
+| 72 | write_file(目标是已存在目录) | 失败 | 写入文件失败: `<abs>/samples` |
+| 73 | write_file(父路径是文件) | 失败 | 写入文件失败: `<abs>/probe/io/noext` |
+| 74 | write_file(点开头路径) | 拒绝 | ❌ 同 D4 文案 |
+| 75 | write_file(排除目录 dist/) | 成功但索引排除 | 先被即时刷收录，rebuild 后清理 → io-02 |
+| 76 | write→同轮 describe(新文件) | 不可见 | 「文件存在，但未标注任何锚点」 |
+| 77 | 下一轮 describe(同文件) | 可见 + symbol | L1 / refresh_probe_intro / refreshProbe |
+| 78 | describe(file='samples/') | 目录概览 | 「目录存在，但目录下没有锚点记录」（B2） |
+| 79 | describe(file='probe') | 目录概览 | 12 条，含 samples/probe/* 5 条（匹配偏宽松） |
+| 80 | describe(file='Same.java') | 歧义报错 | 列出 dup/Same.java、dup2/Same.java |
+| 81 | delete_file(io/UPDATE.md) | 拒绝 | ❌ UPDATE.md 不允许删除 |
+| 82 | 同轮索引巡检 | 两份不同步 | A=48 / P=47，only_A=本轮新写文件（即时刷 vs 轮末 flush） |
+| 83 | build_anchor_index 后巡检 | 一致 + 清理 dist | 43/43 一致，dist 条目消失 |
+| 84 | harness/io_oracle.py | RESULT=PASS | 12 校验 PASS（C2 记 io-01）、16 基线 3 KNOWN |
+| 85 | harness/anchor_oracle.py 回跑 | RESULT=PASS | item diffs=0、file-level problems=0 |
+
+### 复核结论（v3 遗留项）
+- **D4 仍存在**：点开头路径被 `checkPath` 一律拒绝（读/写/删同一文案），「点目录是否被索引排除」依旧无法构造；读索引改走 Python 侧。
+- **D6 仍存在**：`compile_and_run(mode=java)` 子目录主类名推导问题未变（本 lab 只用 Python 模式）。
+- **D8 仍存在**：`samples/md_anchor_example.md` 的 4 个 `mirror_*` 假锚点仍被两份索引收录（desc 为空）。
+- **B2 仍存在**：describe 目录形带尾斜杠不归一（落到「目录存在但无锚点」）；write_file 尾斜杠则被 Path 归一化。
+- **目录形匹配偏宽松、刷新时机、跨文件歧义、结构视图口径**四项复核结果与 v3 记载一致。
+- 已修项 D1 / D2 / D3 / D5 / D7 本轮仍为修复态（两 oracle 哨兵均 PASS）。
+
+### 新增差异（IO）
+- **io-01**：`read_file` schema 描述「限制 5000 字符」与实现 `MAX_LENGTH=50000` 不符（描述陈旧）。证据：13775 字符文件完整返回；截断点为 java≈50000。
+- **io-02**：`write_file` 的即时刷新不套用排除目录过滤，写入 `probe/dist/` 的文件会进两份索引，直到 `build_anchor_index` 重建才清理。
+
+### 复现方式
+1. `build_anchor_index`（project_path=`tools-lab`）。
+2. `compile_and_run`（mode=`python`）→ `harness/anchor_oracle.py`，控制台 `RESULT=PASS`，写 `lab-out/oracle-report.txt`。
+3. `compile_and_run`（mode=`python`）→ `harness/io_oracle.py`，控制台 `RESULT=PASS`，写 `lab-out/io-report.txt`。
+4. 抽取规格：`read_between_anchors` 读 `workflow-read-only/.../FileOperator.java` 的 `fileOperator_readFile`、`ToolExecutor.java` 的 `toolExecutor_checkPath`、`ToolDefinitions.java` 的 `toolDef_readFile`。
+
+
+### v4 补充复核（D6 与结构视图，同日追加）
+| # | 用例 | 预期 | 实测 |
+| --- | --- | --- | --- |
+| 86 | compile_and_run(mode=java) 项目根 `HelloRoot.java` | 可运行 | ✅ 运行成功 |
+| 87 | compile_and_run(mode=java) 子目录 `probe/java_sub/Hello.java` | v3 记「子目录必 CNFE」 | ✅ 运行成功 → D6 未复现 |
+| 88 | compile_and_run(mode=java) 子目录 + `package probe.java_sub.pkg` 的 `P.java` | 包名导致主类名推导失败？ | ✅ 运行成功 |
+| 89 | compile_and_run(mode=java) `probe/java_sub/Sub.java`（内含非 public 类 `Other`） | 主类名按文件名推导 | ❌ `ClassNotFoundException: Sub` → D6 收敛为「不解析源码取主类名」 |
+| 90 | compile_and_run(mode=java) `probe/src/s.java`（`public class S` 与文件名不符） | 编译期即报错 | ❌ javac：应声明于 S.java |
+| 91 | get_file_structure(samples/app.js) | 与索引口径不同 | 列 8 条：字符串假锚点缺席、重名不做 `_2` 去重（两处 `app_js_dup`） |
+
+- **D6 结论改记**：原「子目录 java 模式必失败」在三种形态下均未复现；真实限制是主类名按文件 basename 推导，文件名与主类名不一致（非 public 类）才 CNFE。探针保留 `probe/java_sub/{Hello,Sub}.java`（均带 `预期:` 注释）。
+- 清理：删除临时对照文件 `HelloRoot.java`、`probe/java_sub/pkg/P.java`；`probe/io/UPDATE.md` 保留（read_file/delete_file 拒绝规则用例）。
+
+
+### v4 收尾（回归冻结）
+- 冻结基线：**44 文件 / 134 锚点**，`harness/anchor_oracle.py` 与 `harness/io_oracle.py` 均 `RESULT=PASS`（item diffs=0、file-level problems=0、io 自动校验 12 条无意外失败）。
+- 观察：`compile_and_run(mode=java)` 会在源文件同级建 `classes/` 放字节码（`classes` 属排除段，不影响索引），删除源文件不会自动清理其 `.class`（本轮已手工 `delete_file` 清理）。
+- 差异台账最终状态：已修 D1/D2/D3/D5/D7；未修 D4；D6 改记为「主类名按文件名推导」；D8 既有行为；新增 io-01 / io-02。
+
+
 <!-- @anchor: update_record_anchor -->
 <!-- 追加区：新记录插入本锚点之前 -->
 

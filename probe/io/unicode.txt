@@ -1,0 +1,2 @@
+中文内容 + emoji 🚀🎯 + tab	 + quote "x" + backslash \
+第二行第二行

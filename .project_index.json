@@ -82,6 +82,42 @@
     "line" : 1,
     "desc" : "探针：验证 python 运行模式可用"
   } ],
+  "harness/io_oracle.py" : [ {
+    "id" : "io_oracle_intro",
+    "line" : 1,
+    "desc" : "read_file / write_file 差分校验器：从只读源码抽规格 → 与沙箱事实和实测基线比对 → 报告落盘 lab-out/io-report.txt。",
+    "symbol" : "__init__"
+  }, {
+    "id" : "io_oracle_spec",
+    "line" : 28,
+    "desc" : "规格抽取：正则解析只读源码里的常量与消息模板（纯文本匹配，不执行任何代码）",
+    "symbol" : "extract_spec"
+  }, {
+    "id" : "io_oracle_known_diffs",
+    "line" : 51,
+    "desc" : "已知差异白名单：已记录在 PROJECT.md 台账，出现即不算回归",
+    "symbol" : "java_len"
+  }, {
+    "id" : "io_oracle_helpers",
+    "line" : 61,
+    "desc" : "工具函数：UTF-16 计数（对齐 Java String.length）与索引读取",
+    "symbol" : "java_len"
+  }, {
+    "id" : "io_oracle_baseline",
+    "line" : 75,
+    "desc" : "实测基线：每条为一次真实工具调用观察到的结果，逐条与源码规格判定",
+    "symbol" : "run_checks"
+  }, {
+    "id" : "io_oracle_checks",
+    "line" : 113,
+    "desc" : "自动校验：沙箱事实 + 两份索引，逐条给 PASS/FAIL",
+    "symbol" : "run_checks"
+  }, {
+    "id" : "io_oracle_main",
+    "line" : 174,
+    "desc" : "入口：输出规格、基线判定、自动校验与最终 RESULT，并落盘报告",
+    "symbol" : "main"
+  } ],
   "harness/js_strip_probe.py" : [ {
     "id" : "js_strip_probe_intro",
     "line" : 1,
@@ -139,6 +175,24 @@
     "line" : 10,
     "desc" : "区间终点"
   } ],
+  "probe/io/refresh_probe.js" : [ {
+    "id" : "refresh_probe_intro",
+    "line" : 1,
+    "desc" : "同轮刷新时机探针：写入后同轮 describe 应不可见，下一轮才可见",
+    "symbol" : "refreshProbe"
+  } ],
+  "probe/java_sub/Hello.java" : [ {
+    "id" : "java_sub_control_probe",
+    "line" : 1,
+    "desc" : "预期: 子目录下的 java 模式正常编译运行（v4 复核 D6 未复现）",
+    "symbol" : "main"
+  } ],
+  "probe/java_sub/Sub.java" : [ {
+    "id" : "java_sub_nonpublic_probe",
+    "line" : 1,
+    "desc" : "预期: 主类名按「文件名」推导 → 非 public 类名与文件名不一致时 java 运行会报 CNFE",
+    "symbol" : "main"
+  } ],
   "probe/security/anchor_regex_probe.py" : [ {
     "id" : "anchor_regex_probe_intro",
     "line" : 1,
@@ -188,23 +242,27 @@
     "desc" : "# 项目定位"
   }, {
     "id" : "lab_structure",
-    "line" : 8,
+    "line" : 12,
     "desc" : "# 整体结构"
   }, {
     "id" : "lab_method",
-    "line" : 20,
+    "line" : 25,
     "desc" : "# 关键决策"
   }, {
     "id" : "lab_conventions",
-    "line" : 29,
+    "line" : 36,
     "desc" : "# 规范约定"
   }, {
     "id" : "lab_findings",
-    "line" : 37,
-    "desc" : "# 工具行为差异台账（D 系列 + 观察项；状态以 v3 回归为准）"
+    "line" : 46,
+    "desc" : "# 工具行为差异台账（状态以 v4 回归为准）"
+  }, {
+    "id" : "lab_io",
+    "line" : 69,
+    "desc" : "read_file / write_file 实测口径（v4），供后续用例参照"
   }, {
     "id" : "lab_run",
-    "line" : 58,
+    "line" : 83,
     "desc" : "# 运行方式"
   } ],
   "samples/App.java" : [ {
@@ -590,11 +648,11 @@
     "desc" : "tools-lab 测试更新记录：仅追加，不修改历史条目"
   }, {
     "id" : "update_record_anchor",
-    "line" : 159,
+    "line" : 248,
     "desc" : "追加区：新记录插入本锚点之前"
   }, {
     "id" : "update_record_000",
-    "line" : 162,
+    "line" : 251,
     "desc" : "# [初始] lab 骨架与语料建立"
   } ]
 }

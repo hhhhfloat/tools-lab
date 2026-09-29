@@ -67,6 +67,35 @@
     "line" : 1,
     "preview" : "# @anchor: hello_probe_py_intro"
   } ],
+  "harness/io_oracle.py" : [ {
+    "id" : "io_oracle_intro",
+    "line" : 1,
+    "preview" : "# @anchor: io_oracle_intro"
+  }, {
+    "id" : "io_oracle_spec",
+    "line" : 28,
+    "preview" : "# @anchor: io_oracle_spec"
+  }, {
+    "id" : "io_oracle_known_diffs",
+    "line" : 51,
+    "preview" : "# @anchor: io_oracle_known_diffs"
+  }, {
+    "id" : "io_oracle_helpers",
+    "line" : 61,
+    "preview" : "# @anchor: io_oracle_helpers"
+  }, {
+    "id" : "io_oracle_baseline",
+    "line" : 75,
+    "preview" : "# @anchor: io_oracle_baseline"
+  }, {
+    "id" : "io_oracle_checks",
+    "line" : 113,
+    "preview" : "# @anchor: io_oracle_checks"
+  }, {
+    "id" : "io_oracle_main",
+    "line" : 174,
+    "preview" : "# @anchor: io_oracle_main"
+  } ],
   "harness/js_strip_probe.py" : [ {
     "id" : "js_strip_probe_intro",
     "line" : 1,
@@ -119,6 +148,21 @@
     "line" : 10,
     "preview" : "// @anchor: rt_end"
   } ],
+  "probe/io/refresh_probe.js" : [ {
+    "id" : "refresh_probe_intro",
+    "line" : 1,
+    "preview" : "// @anchor: refresh_probe_intro"
+  } ],
+  "probe/java_sub/Hello.java" : [ {
+    "id" : "java_sub_control_probe",
+    "line" : 1,
+    "preview" : "// @anchor: java_sub_control_probe"
+  } ],
+  "probe/java_sub/Sub.java" : [ {
+    "id" : "java_sub_nonpublic_probe",
+    "line" : 1,
+    "preview" : "// @anchor: java_sub_nonpublic_probe"
+  } ],
   "probe/security/anchor_regex_probe.py" : [ {
     "id" : "anchor_regex_probe_intro",
     "line" : 1,
@@ -165,23 +209,27 @@
     "preview" : "<!-- @anchor: lab_positioning -->"
   }, {
     "id" : "lab_structure",
-    "line" : 8,
+    "line" : 12,
     "preview" : "<!-- @anchor: lab_structure -->"
   }, {
     "id" : "lab_method",
-    "line" : 20,
+    "line" : 25,
     "preview" : "<!-- @anchor: lab_method -->"
   }, {
     "id" : "lab_conventions",
-    "line" : 29,
+    "line" : 36,
     "preview" : "<!-- @anchor: lab_conventions -->"
   }, {
     "id" : "lab_findings",
-    "line" : 37,
+    "line" : 46,
     "preview" : "<!-- @anchor: lab_findings -->"
   }, {
+    "id" : "lab_io",
+    "line" : 69,
+    "preview" : "<!-- @anchor: lab_io -->"
+  }, {
     "id" : "lab_run",
-    "line" : 58,
+    "line" : 83,
     "preview" : "<!-- @anchor: lab_run -->"
   } ],
   "samples/App.java" : [ {
@@ -524,11 +572,11 @@
     "preview" : "<!-- @anchor: tools_lab_update_intro -->"
   }, {
     "id" : "update_record_anchor",
-    "line" : 159,
+    "line" : 248,
     "preview" : "<!-- @anchor: update_record_anchor -->"
   }, {
     "id" : "update_record_000",
-    "line" : 162,
+    "line" : 251,
     "preview" : "<!-- @anchor: update_record_000 -->"
   } ]
 }
